@@ -139,7 +139,7 @@ def load_pix2pix_model(path, index, s):
 # demo
 def intelligent(url=None, image=None, index=0, type=None, model_name='cycle'):
     import os
-    os.environ['CUDA_VISIBLE_DEVICES'] = "2"
+    os.environ['CUDA_VISIBLE_DEVICES'] = "4"
     if model_name == 'cycle':
         a_model = load_cycle_model(intelligent_category(type)['name'], index=index, s='A')
         try:

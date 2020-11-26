@@ -22,7 +22,7 @@ def load_model():
 
 def get_sample(func, seed=0, **kwargs):
     import os
-    os.environ['CUDA_VISIBLE_DEVICES'] = "2"
+    os.environ['CUDA_VISIBLE_DEVICES'] = "4"
     torch.set_grad_enabled(False)
     g_ema = load_model()
     if not seed:
