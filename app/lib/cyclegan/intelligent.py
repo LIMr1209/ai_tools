@@ -109,7 +109,7 @@ def load_cycle_model(path, index, s):
     )
     if isinstance(model, torch.nn.DataParallel):
         model = model.module
-    state_dict = torch.load(os.path.join(complete_path, files[index]))
+    state_dict = torch.load(os.path.join(complete_path, files[index]),map_location=lambda storage, loc: storage.cuda(2))
     if hasattr(state_dict, "_metadata"):
         del state_dict._metadata
     # for key in list(state_dict.keys()):  # need to copy keys here because we mutate in loop
@@ -126,7 +126,7 @@ def load_pix2pix_model(path, index, s):
     model = networks.define_G(3, 3, 64, 'unet_256', 'batch', True, 'normal', 0.02, [0])
     if isinstance(model, torch.nn.DataParallel):
         model = model.module
-    state_dict = torch.load(os.path.join(complete_path, files[index]))
+    state_dict = torch.load(os.path.join(complete_path, files[index]),map_location=lambda storage, loc: storage.cuda(2))
     if hasattr(state_dict, "_metadata"):
         del state_dict._metadata
     # for key in list(state_dict.keys()):  # need to copy keys here because we mutate in loop

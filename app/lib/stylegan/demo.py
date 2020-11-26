@@ -14,7 +14,7 @@ def load_model():
     ckpt = current_app.config['STYLEGAN_PATH']
     from .model import Generator
     g_ema = Generator(size, 512, 8, channel_multiplier=2).to(device)
-    checkpoint = torch.load(ckpt, map_location=lambda storage, loc: storage)
+    checkpoint = torch.load(ckpt, map_location=lambda storage, loc: storage.cuda(2))
     g_ema.load_state_dict(checkpoint["g_ema"])
     g_ema.eval()
     return g_ema
