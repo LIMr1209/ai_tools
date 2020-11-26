@@ -11,7 +11,7 @@ from PIL import Image
 import pickle
 
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = 3
+os.environ['CUDA_VISIBLE_DEVICES'] = "3"
 
 
 def load_model():
