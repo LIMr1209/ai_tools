@@ -6,7 +6,7 @@ from app.helpers.common import img_to_base64
 truncation = 1
 truncation_mean = 4096
 channel_multiplier = 2
-device = "cuda"
+device = "cuda:1"
 size = 256
 
 
@@ -21,6 +21,7 @@ def load_model():
 
 
 def get_sample(func, seed=0, **kwargs):
+    torch.cuda.set_device(1)
     torch.set_grad_enabled(False)
     g_ema = load_model()
     if not seed:

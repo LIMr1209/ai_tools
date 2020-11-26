@@ -95,7 +95,7 @@ def image_loader(url=None, image=None):
             return False, "传入图片需小于2M"
         image = Image.open(image).convert("RGB")
     input = transforms(image)
-    input = input.view(1, 3, 256, 256).to(torch.device('cuda'))
+    input = input.view(1, 3, 256, 256).to(torch.device('cuda:1'))
     return True, input
 
 
