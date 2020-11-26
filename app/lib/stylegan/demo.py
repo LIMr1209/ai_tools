@@ -14,7 +14,7 @@ def load_model():
     ckpt = current_app.config['STYLEGAN_PATH']
     from .model import Generator
     g_ema = Generator(size, 512, 8, channel_multiplier=2).to(device)
-    checkpoint = torch.load(ckpt, map_location=lambda storage, loc: storage.cuda(2))
+    checkpoint = torch.load(ckpt, map_location=lambda storage, loc: storage)
     g_ema.load_state_dict(checkpoint["g_ema"])
     g_ema.eval()
     return g_ema
@@ -23,7 +23,7 @@ def load_model():
 def get_sample(func, seed=0, **kwargs):
     # import os
     # os.environ['CUDA_VISIBLE_DEVICES'] = "2"
-    torch.cuda.set_device(2)
+    # torch.cuda.set_device(2)
     torch.set_grad_enabled(False)
     g_ema = load_model()
     if not seed:

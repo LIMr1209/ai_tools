@@ -91,7 +91,6 @@ class Optimizer:
         device = util.EasyDict()
         device.name             = device_name
         device.optimizer        = None          # Underlying optimizer:     optimizer_class
-        device.loss_scaling_var = None          # Log2 of loss scaling:     tf.Variable
         device.grad_raw         = OrderedDict() # Raw gradients:            var => [grad, ...]
         device.grad_clean       = OrderedDict() # Clean gradients:          var => grad
         device.grad_acc_vars    = OrderedDict() # Accumulation sums:        var => tf.Variable
