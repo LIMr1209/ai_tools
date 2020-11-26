@@ -16,5 +16,4 @@ manager.add_command("run", Server(host="127.0.0.1", port=8015))
 manager.add_command("shell", Shell(make_context=_make_context))
 
 if __name__ == "__main__":
-    http_server = WSGIServer(('127.0.0.1', 8015), application=app, handler_class=WebSocketHandler)
-    http_server.serve_forever()
+    app.run()
