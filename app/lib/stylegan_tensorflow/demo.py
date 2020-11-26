@@ -10,9 +10,6 @@ import numpy as np
 from PIL import Image
 import pickle
 
-import os
-os.environ['CUDA_VISIBLE_DEVICES'] = "3"
-
 
 def load_model():
     network_path = current_app.config['STYLEGAN_TE_PATH']
@@ -33,6 +30,8 @@ def load_model():
 
 
 def get_sample(color=None):
+    import os
+    os.environ['CUDA_VISIBLE_DEVICES'] = "3"
     Gs, Gs_kwargs, noise_vars = load_model()
     img_data_list = []
     def get_img(img_data_list):
