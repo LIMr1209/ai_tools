@@ -1,5 +1,3 @@
-import random
-
 from flask import request, jsonify
 from . import api
 from app.helpers.common import force_int
@@ -11,7 +9,6 @@ from flask import Flask, render_template, request
 # pip install gevent-websocket导入IO多路复用模块
 from geventwebsocket.websocket import WebSocket  # websocket语法提示
 
-from ...helpers.color_cluster_1126 import majoColor_inrange
 
 dataInit = {"data": "", "meta": {"message": "", "status_code": 200, }}
 
