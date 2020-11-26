@@ -101,7 +101,6 @@ def image_loader(url=None, image=None):
 
 # 加载模型
 def load_cycle_model(path, index, s):
-    torch.cuda.set_device(1)
     complete_path = os.path.join(current_app.config["MODEL_PATH"], path, s)
     files = os.listdir(complete_path)
     files.sort(key=lambda x: int(x[:-12]), reverse=True)
@@ -139,6 +138,7 @@ def load_pix2pix_model(path, index, s):
 
 # demo
 def intelligent(url=None, image=None, index=0, type=None, model_name='cycle'):
+    torch.cuda.set_device(1)
     if model_name == 'cycle':
         a_model = load_cycle_model(intelligent_category(type)['name'], index=index, s='A')
         try:
