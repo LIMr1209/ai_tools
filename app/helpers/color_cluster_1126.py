@@ -50,7 +50,7 @@ def base64_cv2(base64_str):
 
 # output the major color of the suitcase
 # except "white"
-def majoColor_inrange(image_path)-> str:
+def majoColor_inrange(img)-> str:
     color_range = {
         "黑色": [np.array([0,0,0]),np.array([180,255,80])],
         "灰色":[np.array([0,0,80]),np.array([180,15,220])],
@@ -65,9 +65,9 @@ def majoColor_inrange(image_path)-> str:
         "紫色":[np.array([125,15,46]),np.array([155,255,255])]
     }
     color = "其他"
-    img = base64_cv2(image_path)
-    # img = cv2.imread(os.path.join(image_path))
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    # img = base64_cv2(image_path)
+    # # img = cv2.imread(os.path.join(image_path))
+    # img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     other_mask = cv2.inRange(img, np.float32(color_range["白色"][0]), np.float32(color_range["白色"][1]))
     white_mask = cv2.bitwise_not(other_mask)
     [x1, x2, y1, y2] = getROI(white_mask)

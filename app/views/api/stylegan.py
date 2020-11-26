@@ -47,8 +47,8 @@ class StyleganTeLatent(MethodView):
             seed_list = [random.randint(1, 100000) for i in range(50)]
             img_data_list = []
             for i in seed_list:
-                img_data, seed = te_sample(i)
-                color_tags = majoColor_inrange(img_data)
+                img_data, seed, image_cv2 = te_sample(i)
+                color_tags = majoColor_inrange(image_cv2)
                 if color_tags == color:
                     img_data_list.append({
                         'img': img_data,

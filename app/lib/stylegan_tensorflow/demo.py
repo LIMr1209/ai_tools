@@ -1,5 +1,5 @@
 from flask import current_app
-
+import cv2
 import dnnlib.tflib as tflib
 from app.helpers.common import img_to_base64
 from dnnlib import EasyDict
@@ -32,4 +32,6 @@ def get_sample(seed):
     images = Gs.run(z, None, **Gs_kwargs) # [minibatch, height, width, channel]
     img = Image.fromarray(images[0], 'RGB')
     base64_str_data = img_to_base64(img)
-    return base64_str_data, seed
+    np_array = np.asarray(img)
+    image_cv2 = cv2.cvtColor(np_array, cv2.COLOR_RGB2BGR)
+    return base64_str_data, seed, image_cv2
