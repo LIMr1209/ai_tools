@@ -41,13 +41,8 @@ class StyleganTeLatent(MethodView):
 
     def post(self):
         data = copy.deepcopy(dataInit)
-        seed = force_int(request.values.get("seed", 0))
         color = request.values.get("color", '')
-        if color:
-            seed_list = [random.randint(1, 100000) for i in range(50)]
-            img_data_list = te_sample(seed_list, color=color)
-        else:
-            img_data_list = te_sample(seed)
+        img_data_list = te_sample(color=color)
         data["data"] = img_data_list
         return jsonify(**data)
 

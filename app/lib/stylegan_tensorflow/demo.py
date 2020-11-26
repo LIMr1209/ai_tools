@@ -1,3 +1,5 @@
+import random
+
 from flask import current_app
 import cv2
 import dnnlib.tflib as tflib
@@ -25,11 +27,14 @@ def load_model():
     return Gs, Gs_kwargs, noise_vars
 
 
-def get_sample(seed, color=None):
+
+
+def get_sample(color=None):
     Gs, Gs_kwargs, noise_vars = load_model()
     img_data_list = []
-    if isinstance(seed, list):
-        for i in seed:
+    def get_img(img_data_list):
+        seed_list = [random.randint(1, 100000) for i in range(50)]
+        for i in seed_list:
             rnd = np.random.RandomState(i)
             z = rnd.randn(1, *Gs.input_shape[1:])  # [minibatch, component]
             tflib.set_vars({var: rnd.randn(*var.shape.as_list()) for var in noise_vars})  # [height, width]
@@ -37,22 +42,19 @@ def get_sample(seed, color=None):
             img = Image.fromarray(images[0], 'RGB')
             base64_str_data = img_to_base64(img)
             np_array = np.asarray(img)
-            image_cv2 = cv2.cvtColor(np_array, cv2.COLOR_RGB2BGR)
-            color_tags = majoColor_inrange(image_cv2)
-            if color_tags == color:
-                img_data_list.append({
-                    'img': base64_str_data,
-                    'seed': i,
-                })
-    else:
-        rnd = np.random.RandomState(seed)
-        z = rnd.randn(1, *Gs.input_shape[1:])  # [minibatch, component]
-        tflib.set_vars({var: rnd.randn(*var.shape.as_list()) for var in noise_vars})  # [height, width]
-        images = Gs.run(z, None, **Gs_kwargs)  # [minibatch, height, width, channel]
-        img = Image.fromarray(images[0], 'RGB')
-        base64_str_data = img_to_base64(img)
-        img_data_list.append({
-                    'img': base64_str_data,
-                    'seed': seed,
-                })
+            if len(img_data_list) == 6:
+                break
+            if color:
+                image_cv2 = cv2.cvtColor(np_array, cv2.COLOR_RGB2BGR)
+                color_tags = majoColor_inrange(image_cv2)
+                if color_tags == color:
+                    img_data_list.append(base64_str_data)
+            else:
+                img_data_list.append(base64_str_data)
+        return img_data_list
+    get_img(img_data_list)
+    if len(img_data_list) < 6:
+        get_img(img_data_list)
+    if len(img_data_list) < 6:
+        get_img(img_data_list)
     return img_data_list
