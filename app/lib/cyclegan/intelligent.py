@@ -101,6 +101,7 @@ def image_loader(url=None, image=None):
 
 # 加载模型
 def load_cycle_model(path, index, s):
+    torch.cuda.set_device(1)
     complete_path = os.path.join(current_app.config["MODEL_PATH"], path, s)
     files = os.listdir(complete_path)
     files.sort(key=lambda x: int(x[:-12]), reverse=True)
