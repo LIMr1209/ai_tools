@@ -95,7 +95,7 @@ def image_loader(url=None, image=None):
             return False, "传入图片需小于2M"
         image = Image.open(image).convert("RGB")
     input = transforms(image)
-    input = input.view(1, 3, 256, 256).to(torch.device('cuda:1'))
+    input = input.view(1, 3, 256, 256).to(torch.device('cuda'))
     return True, input
 
 
@@ -109,7 +109,7 @@ def load_cycle_model(path, index, s):
     )
     if isinstance(model, torch.nn.DataParallel):
         model = model.module
-    state_dict = torch.load(os.path.join(complete_path, files[index]), map_location={'cuda:0':'cuda:1'})
+    state_dict = torch.load(os.path.join(complete_path, files[index]))
     if hasattr(state_dict, "_metadata"):
         del state_dict._metadata
     # for key in list(state_dict.keys()):  # need to copy keys here because we mutate in loop
@@ -126,7 +126,7 @@ def load_pix2pix_model(path, index, s):
     model = networks.define_G(3, 3, 64, 'unet_256', 'batch', True, 'normal', 0.02, [0])
     if isinstance(model, torch.nn.DataParallel):
         model = model.module
-    state_dict = torch.load(os.path.join(complete_path, files[index]), map_location={'cuda:0':'cuda:1'})
+    state_dict = torch.load(os.path.join(complete_path, files[index]))
     if hasattr(state_dict, "_metadata"):
         del state_dict._metadata
     # for key in list(state_dict.keys()):  # need to copy keys here because we mutate in loop
@@ -138,7 +138,6 @@ def load_pix2pix_model(path, index, s):
 
 # demo
 def intelligent(url=None, image=None, index=0, type=None, model_name='cycle'):
-    torch.cuda.set_device(1)
     if model_name == 'cycle':
         a_model = load_cycle_model(intelligent_category(type)['name'], index=index, s='A')
         try:
@@ -163,7 +162,7 @@ def intelligent(url=None, image=None, index=0, type=None, model_name='cycle'):
         result = tensor2im(input_tensor)
         img_new = Image.fromarray(result)
         input = transforms(img_new)
-        input_tensor = input.view(1, 3, 256, 256).to(torch.device('cuda:1'))
+        input_tensor = input.view(1, 3, 256, 256).to(torch.device('cuda'))
     output = a_model(input_tensor)
     result = tensor2im(output)
     img_new = Image.fromarray(result)
