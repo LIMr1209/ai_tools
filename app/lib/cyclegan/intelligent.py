@@ -163,7 +163,7 @@ def intelligent(url=None, image=None, index=0, type=None, model_name='cycle'):
         result = tensor2im(input_tensor)
         img_new = Image.fromarray(result)
         input = transforms(img_new)
-        input_tensor = input.view(1, 3, 256, 256).to(torch.device('cuda'))
+        input_tensor = input.view(1, 3, 256, 256).to(torch.device('cuda:1'))
     output = a_model(input_tensor)
     result = tensor2im(output)
     img_new = Image.fromarray(result)
