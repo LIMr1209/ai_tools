@@ -6,7 +6,7 @@ from app.helpers.common import img_to_base64
 truncation = 1
 truncation_mean = 4096
 channel_multiplier = 2
-device = "cuda:1"
+device = "cuda"
 size = 256
 
 
