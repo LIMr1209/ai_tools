@@ -1,6 +1,7 @@
 from flask import current_app
 import cv2
 import dnnlib.tflib as tflib
+from app.helpers.color_cluster_1126 import majoColor_inrange
 from app.helpers.common import img_to_base64
 from dnnlib import EasyDict
 import numpy as np
@@ -21,17 +22,37 @@ def load_model():
     Gs_kwargs.output_transform = dict(func=tflib.convert_images_to_uint8, nchw_to_nhwc=True)
     Gs_kwargs.randomize_noise = False
     Gs_kwargs.truncation_psi = truncation_psi
-    return Gs,Gs_kwargs,noise_vars
+    return Gs, Gs_kwargs, noise_vars
 
 
-def get_sample(seed):
-    Gs,Gs_kwargs,noise_vars = load_model()
-    rnd = np.random.RandomState(seed)
-    z = rnd.randn(1, *Gs.input_shape[1:]) # [minibatch, component]
-    tflib.set_vars({var: rnd.randn(*var.shape.as_list()) for var in noise_vars}) # [height, width]
-    images = Gs.run(z, None, **Gs_kwargs) # [minibatch, height, width, channel]
-    img = Image.fromarray(images[0], 'RGB')
-    base64_str_data = img_to_base64(img)
-    np_array = np.asarray(img)
-    image_cv2 = cv2.cvtColor(np_array, cv2.COLOR_RGB2BGR)
-    return base64_str_data, seed, image_cv2
+def get_sample(seed, color=None):
+    Gs, Gs_kwargs, noise_vars = load_model()
+    img_data_list = []
+    if isinstance(seed, list):
+        for i in seed:
+            rnd = np.random.RandomState(i)
+            z = rnd.randn(1, *Gs.input_shape[1:])  # [minibatch, component]
+            tflib.set_vars({var: rnd.randn(*var.shape.as_list()) for var in noise_vars})  # [height, width]
+            images = Gs.run(z, None, **Gs_kwargs)  # [minibatch, height, width, channel]
+            img = Image.fromarray(images[0], 'RGB')
+            base64_str_data = img_to_base64(img)
+            np_array = np.asarray(img)
+            image_cv2 = cv2.cvtColor(np_array, cv2.COLOR_RGB2BGR)
+            color_tags = majoColor_inrange(image_cv2)
+            if color_tags == color:
+                img_data_list.append({
+                    'img': base64_str_data,
+                    'seed': i,
+                })
+    else:
+        rnd = np.random.RandomState(seed)
+        z = rnd.randn(1, *Gs.input_shape[1:])  # [minibatch, component]
+        tflib.set_vars({var: rnd.randn(*var.shape.as_list()) for var in noise_vars})  # [height, width]
+        images = Gs.run(z, None, **Gs_kwargs)  # [minibatch, height, width, channel]
+        img = Image.fromarray(images[0], 'RGB')
+        base64_str_data = img_to_base64(img)
+        img_data_list.append({
+                    'img': base64_str_data,
+                    'seed': seed,
+                })
+    return img_data_list

@@ -45,23 +45,10 @@ class StyleganTeLatent(MethodView):
         color = request.values.get("color", '')
         if color:
             seed_list = [random.randint(1, 100000) for i in range(50)]
-            img_data_list = []
-            for i in seed_list:
-                img_data, seed, image_cv2 = te_sample(i)
-                color_tags = majoColor_inrange(image_cv2)
-                if color_tags == color:
-                    img_data_list.append({
-                        'img': img_data,
-                        'seed': seed,
-                    })
-            data["data"] = img_data_list
+            img_data_list = te_sample(seed_list, color=color)
         else:
-            img_data, seed = te_sample(seed)
-            data["data"] = [{
-                'img': img_data,
-                'seed': seed,
-            }]
-
+            img_data_list = te_sample(seed)
+        data["data"] = img_data_list
         return jsonify(**data)
 
 
