@@ -30,8 +30,8 @@ def load_model():
 
 
 def get_sample(color=None):
-    import os
-    os.environ['CUDA_VISIBLE_DEVICES'] = "3"
+    # import os
+    # os.environ['CUDA_VISIBLE_DEVICES'] = "3"
     Gs, Gs_kwargs, noise_vars = load_model()
     img_data_list = []
     def get_img(img_data_list):

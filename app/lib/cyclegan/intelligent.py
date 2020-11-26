@@ -95,7 +95,7 @@ def image_loader(url=None, image=None):
             return False, "传入图片需小于2M"
         image = Image.open(image).convert("RGB")
     input = transforms(image)
-    input = input.view(1, 3, 256, 256).to(torch.device('cuda'))
+    input = input.view(1, 3, 256, 256).cuda(2)
     return True, input
 
 
@@ -138,8 +138,9 @@ def load_pix2pix_model(path, index, s):
 
 # demo
 def intelligent(url=None, image=None, index=0, type=None, model_name='cycle'):
-    import os
-    os.environ['CUDA_VISIBLE_DEVICES'] = "4"
+    # import os
+    # os.environ['CUDA_VISIBLE_DEVICES'] = "4"
+    torch.cuda.set_device(2)
     if model_name == 'cycle':
         a_model = load_cycle_model(intelligent_category(type)['name'], index=index, s='A')
         try:
@@ -164,7 +165,7 @@ def intelligent(url=None, image=None, index=0, type=None, model_name='cycle'):
         result = tensor2im(input_tensor)
         img_new = Image.fromarray(result)
         input = transforms(img_new)
-        input_tensor = input.view(1, 3, 256, 256).to(torch.device('cuda'))
+        input_tensor = input.view(1, 3, 256, 256).cuda(2)
     output = a_model(input_tensor)
     result = tensor2im(output)
     img_new = Image.fromarray(result)
