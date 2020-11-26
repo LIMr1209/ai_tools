@@ -10,6 +10,9 @@ import numpy as np
 from PIL import Image
 import pickle
 
+import os
+os.environ['CUDA_VISIBLE_DEVICES'] = 3
+
 
 def load_model():
     network_path = current_app.config['STYLEGAN_TE_PATH']
