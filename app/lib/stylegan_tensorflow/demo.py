@@ -32,7 +32,9 @@ def load_model():
 def get_sample(color=None):
     # import os
     # os.environ['CUDA_VISIBLE_DEVICES'] = "3"
-    Gs, Gs_kwargs, noise_vars = load_model()
+    Gs = current_app.config['GS']
+    Gs_kwargs = current_app.config['GS_KWARGS']
+    noise_vars = current_app.config['NOISE_VARS']
     img_data_list = []
     seed_list = [random.randint(1, 100000) for i in range(500)]
     for i in seed_list:

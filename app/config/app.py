@@ -21,6 +21,10 @@ STYLEGAN_PATH = cf.get("checkpoint", "stylegan_path", fallback='')
 STYLEGAN_TE_PATH = cf.get("checkpoint", "stylegan_te_path", fallback='')
 FACTOR_PATH = cf.get("checkpoint", "factor_path", fallback='')
 
+if STYLEGAN_TE_PATH:
+    from app.lib.stylegan_tensorflow.demo import load_model
+
+    GS, GS_KWARGS, NOISE_VARS = load_model()
 
 
 IMAGE_SIZE = 224
@@ -33,6 +37,7 @@ if LOAD_MODEL_PATH:
 
     MODEL = load_model(NUM_CLASSES, LOAD_MODEL_PATH, MODEL_NAME)
 U2NETP_PATH = cf.get("ai", "u2netp_path", fallback='')
+
 if U2NETP_PATH:
     from app.lib.u2net.detect import load_model
 
