@@ -20,11 +20,11 @@ MODEL_PATH = cf.get("checkpoint", "model_path")
 STYLEGAN_PATH = cf.get("checkpoint", "stylegan_path", fallback='')
 STYLEGAN_TE_PATH = cf.get("checkpoint", "stylegan_te_path", fallback='')
 FACTOR_PATH = cf.get("checkpoint", "factor_path", fallback='')
-
-if STYLEGAN_TE_PATH:
-    from app.lib.stylegan_tensorflow.demo import load_model
-
-    GS, GS_KWARGS, NOISE_VARS = load_model(STYLEGAN_TE_PATH)
+#
+# if STYLEGAN_TE_PATH:
+#     from app.lib.stylegan_tensorflow.demo import load_model
+#
+#     GS, GS_KWARGS, NOISE_VARS = load_model(STYLEGAN_TE_PATH)
 
 
 IMAGE_SIZE = 224

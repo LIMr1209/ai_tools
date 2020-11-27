@@ -11,7 +11,8 @@ from PIL import Image
 import pickle
 
 
-def load_model(network_path):
+def load_model():
+    network_path = current_app.config['STYLEGAN_TE_PATH']
     truncation_psi = 0.5
     stream = open(network_path, 'rb')
     tflib.init_tf()
@@ -31,9 +32,10 @@ def load_model(network_path):
 def get_sample(color=None):
     # import os
     # os.environ['CUDA_VISIBLE_DEVICES'] = "3"
-    Gs = current_app.config['GS']
-    Gs_kwargs = current_app.config['GS_KWARGS']
-    noise_vars = current_app.config['NOISE_VARS']
+    Gs, Gs_kwargs, noise_vars = load_model()
+    # Gs = current_app.config['GS']
+    # Gs_kwargs = current_app.config['GS_KWARGS']
+    # noise_vars = current_app.config['NOISE_VARS']
     img_data_list = []
     seed_list = [random.randint(1, 100000) for i in range(500)]
     for i in seed_list:
