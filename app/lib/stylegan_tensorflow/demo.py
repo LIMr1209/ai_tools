@@ -11,8 +11,7 @@ from PIL import Image
 import pickle
 
 
-def load_model():
-    network_path = current_app.config['STYLEGAN_TE_PATH']
+def load_model(network_path):
     truncation_psi = 0.5
     stream = open(network_path, 'rb')
     tflib.init_tf()

@@ -24,7 +24,7 @@ FACTOR_PATH = cf.get("checkpoint", "factor_path", fallback='')
 if STYLEGAN_TE_PATH:
     from app.lib.stylegan_tensorflow.demo import load_model
 
-    GS, GS_KWARGS, NOISE_VARS = load_model()
+    GS, GS_KWARGS, NOISE_VARS = load_model(STYLEGAN_TE_PATH)
 
 
 IMAGE_SIZE = 224
