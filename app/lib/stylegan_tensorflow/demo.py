@@ -55,4 +55,5 @@ def get_sample(color=None):
                 img_data_list.append(base64_str_data)
         else:
             img_data_list.append(base64_str_data)
+    del Gs, Gs_kwargs, noise_vars
     return img_data_list
