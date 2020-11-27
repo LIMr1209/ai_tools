@@ -34,29 +34,22 @@ def get_sample(color=None):
     # os.environ['CUDA_VISIBLE_DEVICES'] = "3"
     Gs, Gs_kwargs, noise_vars = load_model()
     img_data_list = []
-    def get_img(img_data_list):
-        seed_list = [random.randint(1, 100000) for i in range(50)]
-        for i in seed_list:
-            rnd = np.random.RandomState(i)
-            z = rnd.randn(1, *Gs.input_shape[1:])  # [minibatch, component]
-            tflib.set_vars({var: rnd.randn(*var.shape.as_list()) for var in noise_vars})  # [height, width]
-            images = Gs.run(z, None, **Gs_kwargs)  # [minibatch, height, width, channel]
-            img = Image.fromarray(images[0], 'RGB')
-            base64_str_data = img_to_base64(img)
+    seed_list = [random.randint(1, 100000) for i in range(500)]
+    for i in seed_list:
+        if len(img_data_list) >= 6:
+            break
+        rnd = np.random.RandomState(i)
+        z = rnd.randn(1, *Gs.input_shape[1:])  # [minibatch, component]
+        tflib.set_vars({var: rnd.randn(*var.shape.as_list()) for var in noise_vars})  # [height, width]
+        images = Gs.run(z, None, **Gs_kwargs)  # [minibatch, height, width, channel]
+        img = Image.fromarray(images[0], 'RGB')
+        base64_str_data = img_to_base64(img)
+        if color:
             np_array = np.asarray(img)
-            if len(img_data_list) == 6:
-                break
-            if color:
-                image_cv2 = cv2.cvtColor(np_array, cv2.COLOR_RGB2BGR)
-                color_tags = majoColor_inrange(image_cv2)
-                if color_tags == color:
-                    img_data_list.append(base64_str_data)
-            else:
+            image_cv2 = cv2.cvtColor(np_array, cv2.COLOR_RGB2BGR)
+            color_tags = majoColor_inrange(image_cv2)
+            if color_tags == color:
                 img_data_list.append(base64_str_data)
-        return img_data_list
-    get_img(img_data_list)
-    if len(img_data_list) < 6:
-        get_img(img_data_list)
-    if len(img_data_list) < 6:
-        get_img(img_data_list)
+        else:
+            img_data_list.append(base64_str_data)
     return img_data_list
