@@ -53,7 +53,8 @@ def get_sample(color=None):
             color_tags = majoColor_inrange(image_cv2)
             if color_tags == color:
                 img_data_list.append(base64_str_data)
+            del np_array, image_cv2
         else:
             img_data_list.append(base64_str_data)
-    del Gs, Gs_kwargs, noise_vars
+        del images, img,
     return img_data_list
