@@ -8,8 +8,9 @@ from app.lib.stylegan_tensorflow.demo import get_sample as te_sample
 from flask import Flask, render_template, request
 # pip install gevent-websocket导入IO多路复用模块
 from geventwebsocket.websocket import WebSocket  # websocket语法提示
+import os
 
-
+os.environ['CUDA_VISIBLE_DEVICES'] = '1,2,3'
 dataInit = {"data": "", "meta": {"message": "", "status_code": 200, }}
 
 
