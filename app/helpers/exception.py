@@ -17,7 +17,7 @@ def framework_error(e):
             return ServerError(message=str(e))
         else:
             current_app.logger.warning(str(e))
-            return e
+            return ServerError(message=str(e))
 
 
 class APIException(HTTPException):

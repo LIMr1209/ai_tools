@@ -95,7 +95,7 @@ def image_loader(url=None, image=None):
             return False, "传入图片需小于2M"
         image = Image.open(image).convert("RGB")
     input = transforms(image)
-    input = input.view(1, 3, 256, 256).to(torch.device('cuda'))
+    input = input.view(1, 3, 256, 256).to(torch.device('cpu'))
     return True, input
 
 
@@ -105,7 +105,7 @@ def load_cycle_model(path, index, s):
     files = os.listdir(complete_path)
     files.sort(key=lambda x: int(x[:-12]), reverse=True)
     model = networks.define_G(
-        3, 3, 64, "resnet_9blocks", "instance", False, "normal", 0.02, [0]
+        3, 3, 64, "resnet_9blocks", "instance", False, "normal", 0.02,
     )
     if isinstance(model, torch.nn.DataParallel):
         model = model.module
@@ -165,7 +165,7 @@ def intelligent(url=None, image=None, index=0, type=None, model_name='cycle'):
         result = tensor2im(input_tensor)
         img_new = Image.fromarray(result)
         input = transforms(img_new)
-        input_tensor = input.view(1, 3, 256, 256).to(torch.device('cuda'))
+        input_tensor = input.view(1, 3, 256, 256).to(torch.device('cpu'))
     output = a_model(input_tensor)
     result = tensor2im(output)
     img_new = Image.fromarray(result)

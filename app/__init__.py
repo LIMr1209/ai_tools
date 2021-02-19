@@ -5,7 +5,7 @@ from flask import Flask
 import datetime
 import os
 
-from loguru import logger
+# from loguru import logger
 
 from app.helpers.exception import APIException, ServerError, framework_error
 from app.helpers.interceptor import register_api
@@ -26,7 +26,7 @@ def create_app(config=None):
 
     app.config.update({"SITE_TIME": datetime.datetime.utcnow()})
 
-    app.logger = logger
+    # app.logger = logger
 
     from .views import api
 
