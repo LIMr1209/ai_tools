@@ -26,11 +26,11 @@ start)
 ;;
 stop)
         #killall -9 uwsgi
-        uwsgi --stop /var/run/uwsgi_design-engine.pid
+        uwsgi --stop /var/run/uwsgi_ai_tools.pid
         echo "Stop uwsgi service [OK]"
 ;;
 restart)
-        uwsgi --reload /var/run/uwsgi_design-engine.pid
+        uwsgi --reload /var/run/uwsgi_ai_tools.pid
         echo "restart uwsgi [OK]"
 ;;
 *)
