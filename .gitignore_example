@@ -1,0 +1,10 @@
+env/
+.idea/
+.*
+__pycache__
+!.gitignore_example
+!.env_example
+uwsgi.ini
+deploy.sh
+*.pyc
+uwsgi_ai_tools.pid

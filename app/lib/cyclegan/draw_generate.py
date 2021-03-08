@@ -7,7 +7,7 @@ from app.lib.cyclegan import load_cycle_single, image_loader, tensor2im
 
 # demo  绘制草图生成
 def draw_generate(image=None, type=None):
-    # model = load_cycle_single(draw_generate_category(type)['name'], s='A')
+    # model = load_cycle_single(draw_generate_category(type)['name'],'160.pt')
     # res, input_tensor = image_loader(image=image)
     # if not res:
     #     return False, input_tensor

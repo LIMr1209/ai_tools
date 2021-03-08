@@ -102,8 +102,8 @@ def image_loader(url=None, image=None):
 
 
 # 加载草图画笔生成模型cycle
-def load_cycle_single(file_name, s):
-    complete_path = os.path.join(current_app.config["MODEL_PATH"], 'draw', file_name)
+def load_cycle_single(s, file_name):
+    complete_path = os.path.join(current_app.config["MODEL_PATH"], 'draw', s, file_name)
     model = networks.define_G(
         3, 3, 64, "resnet_9blocks", "instance", False, "normal", 0.02,
     )
