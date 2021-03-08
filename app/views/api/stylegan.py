@@ -8,6 +8,7 @@ from app.lib.stylegan_tensorflow.demo import get_sample as te_sample
 from flask import Flask, render_template, request
 # pip install gevent-websocket导入IO多路复用模块
 from geventwebsocket.websocket import WebSocket  # websocket语法提示
+
 dataInit = {"data": "", "meta": {"message": "", "status_code": 200, }}
 
 
@@ -17,6 +18,19 @@ def websocket():
     # print(len(client_list), client_list)
 
 
+# tensorflow版stylegan
+@api.expose("/stylegan_te/generate", methods=["POST"])
+class StyleganTeLatent(MethodView):
+
+    def post(self):
+        data = copy.deepcopy(dataInit)
+        color = request.values.get("color", '')
+        img_data_list = te_sample(color=color)
+        data["data"] = img_data_list
+        return jsonify(**data)
+
+
+# pytorch stylegan 生成
 @api.expose("/stylegan/generate", methods=["POST"])
 class StyleganGenerate(MethodView):
 
@@ -31,17 +45,7 @@ class StyleganGenerate(MethodView):
         return jsonify(**data)
 
 
-@api.expose("/stylegan_te/generate", methods=["POST"])
-class StyleganTeLatent(MethodView):
-
-    def post(self):
-        data = copy.deepcopy(dataInit)
-        color = request.values.get("color", '')
-        img_data_list = te_sample(color=color)
-        data["data"] = img_data_list
-        return jsonify(**data)
-
-
+# pytorch stylegan 变化
 @api.expose("/stylegan/latent", methods=["POST"])
 class StyleganLatent(MethodView):
 

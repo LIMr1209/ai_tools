@@ -1,5 +1,6 @@
 #  常量配置
 
+# 上传草图生成
 def intelligent_category(id=0):
     groups = [
         {"id": 1, "name": "盘子"},
@@ -11,6 +12,18 @@ def intelligent_category(id=0):
                 return i
     return groups
 
+# 绘制草图生成
+def draw_generate_category(id=0):
+    groups = [
+        {"id": 1, "name": "箱包"},
+    ]
+    if id:
+        for i in groups:
+            if i["id"] == id:
+                return i
+    return groups
+
+# 图片识别标签
 def get_tag():
     return [
         "MP3",

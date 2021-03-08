@@ -10,3 +10,4 @@ uWSGI==2.0.18
 requests
 efficientnet_pytorch
 scikit-image
+tensorflow=1.14
