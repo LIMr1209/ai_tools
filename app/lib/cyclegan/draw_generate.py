@@ -19,6 +19,7 @@ def draw_generate(image=None, base64_data=None, type=None):
     torch.set_grad_enabled(True)
     img_new = Image.fromarray(result)
     image_base64 = img_to_base64(img_new)
-    # retval, buffer = cv2.imencode('.png', result)
-    # image_base64 = "data:image/png;base64," + str(base64.b64encode(buffer), encoding='utf-8')
+    # img = cv2.cvtColor(result, cv2.COLOR_RGB2BGR) # cv2 默认BGR 需要转换RGB
+    # retval, buffer = cv2.imencode('.jpg', img)
+    # image_base64 = "data:image/jpg;base64," + str(base64.b64encode(buffer), encoding='utf-8')
     return True, image_base64

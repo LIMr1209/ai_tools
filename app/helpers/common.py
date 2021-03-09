@@ -115,5 +115,5 @@ def img_to_base64(img):
     img.save(img_buffer, format="PNG", quality=100)
     byte_data = img_buffer.getvalue()
     base64_str = base64.b64encode(byte_data)
-    base64_str = "data:image/png;base64," + base64_str.decode(encoding="ascii")
+    base64_str = "data:image/jpg;base64," + base64_str.decode(encoding="ascii")
     return base64_str
