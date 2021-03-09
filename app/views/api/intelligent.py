@@ -57,40 +57,6 @@ class Intelligent(MethodView):
         return jsonify(**data)
 
 
-# 上传生成
-@api.expose("/upload/generate")
-class UploadGenerate(MethodView):
-    methods = ["POST"]
-
-    # decorators = [user_required]
-
-    def post(self):
-        data = copy.deepcopy(dataInit)
-        myFile = request.files.get("file", None)
-        type = force_int(request.values.get("type", 0))
-        if not myFile:
-            data["meta"]["message"] = "请上传图片文件"
-            data["meta"]["status_code"] = 400
-            return data
-        if myFile.mimetype not in ["image/jpeg", "image/png", "image/jpg"]:
-            data["meta"]["message"] = "上传图片文件的格式有误"
-            data["meta"]["status_code"] = 400
-            return data
-        if type not in list(map(lambda x: x["id"], draw_generate_category())):
-            data["meta"]["message"] = "请选择正确的生成类型"
-            data["meta"]["status_code"] = 400
-            return data
-
-        from app.lib.cyclegan.draw_generate import draw_generate
-        res, base64_str = draw_generate(image=myFile, type=type)
-        if not res:
-            data["meta"]["message"] = base64_str
-            data["meta"]["status_code"] = 500
-            return data
-        else:
-            data["data"] = base64_str
-        return jsonify(**data)
-
 # 画笔生成
 @api.expose("/draw/generate")
 class DrawGenerate(MethodView):
@@ -100,20 +66,24 @@ class DrawGenerate(MethodView):
 
     def post(self):
         data = copy.deepcopy(dataInit)
+        myFile = request.files.get("file", None)
+        type = force_int(request.values.get("type", 0))
         img = request.form.get('image_base64', '')
         img = img.replace("data:image/jpeg;base64,", "").replace("data:image/png;base64,", "")
-        type = force_int(request.values.get("type", 0))
-        if not img:
-            data["meta"]["message"] = "请输入图片base64"
+        if not myFile and not img:
+            data["meta"]["message"] = "图片参数错误"
+            data["meta"]["status_code"] = 400
+            return data
+        if myFile and myFile.mimetype not in ["image/jpeg", "image/png", "image/jpg"]:
+            data["meta"]["message"] = "上传图片文件的格式有误"
             data["meta"]["status_code"] = 400
             return data
         if type not in list(map(lambda x: x["id"], draw_generate_category())):
             data["meta"]["message"] = "请选择正确的生成类型"
             data["meta"]["status_code"] = 400
             return data
-
         from app.lib.cyclegan.draw_generate import draw_generate
-        res, base64_str = draw_generate(base64_data=img, type=type)
+        res, base64_str = draw_generate(base64_data=img, image=myFile, type=type)
         if not res:
             data["meta"]["message"] = base64_str
             data["meta"]["status_code"] = 500
