@@ -16,4 +16,4 @@ manager.add_command("run", Server(host="127.0.0.1", port=8020))
 manager.add_command("shell", Shell(make_context=_make_context))
 
 if __name__ == '__main__':
-    app.run()
+    manager.run()

@@ -57,8 +57,9 @@ class Intelligent(MethodView):
         return jsonify(**data)
 
 
-@api.expose("/draw/generate")
-class DrawGenerate(MethodView):
+# 上传生成
+@api.expose("/upload/generate")
+class UploadGenerate(MethodView):
     methods = ["POST"]
 
     # decorators = [user_required]
@@ -82,6 +83,37 @@ class DrawGenerate(MethodView):
 
         from app.lib.cyclegan.draw_generate import draw_generate
         res, base64_str = draw_generate(image=myFile, type=type)
+        if not res:
+            data["meta"]["message"] = base64_str
+            data["meta"]["status_code"] = 500
+            return data
+        else:
+            data["data"] = base64_str
+        return jsonify(**data)
+
+# 画笔生成
+@api.expose("/draw/generate")
+class DrawGenerate(MethodView):
+    methods = ["POST"]
+
+    # decorators = [user_required]
+
+    def post(self):
+        data = copy.deepcopy(dataInit)
+        img = request.form.get('image_base64')
+        img = img.replace("data:image/jpeg;base64,", "").replace("data:image/png;base64,", "")
+        type = force_int(request.values.get("type", 0))
+        if not img:
+            data["meta"]["message"] = "请输入图片base64"
+            data["meta"]["status_code"] = 400
+            return data
+        if type not in list(map(lambda x: x["id"], draw_generate_category())):
+            data["meta"]["message"] = "请选择正确的生成类型"
+            data["meta"]["status_code"] = 400
+            return data
+
+        from app.lib.cyclegan.draw_generate import draw_generate
+        res, base64_str = draw_generate(base64_data=img, type=type)
         if not res:
             data["meta"]["message"] = base64_str
             data["meta"]["status_code"] = 500
