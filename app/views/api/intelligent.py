@@ -67,7 +67,7 @@ class DrawGenerate(MethodView):
     def post(self):
         data = copy.deepcopy(dataInit)
         myFile = request.files.get("file", None)
-        type = force_int(request.values.get("type", 0))
+        type = force_int(request.values.get("type", 1))
         img = request.form.get('image_base64', '')
         img = img.replace("data:image/jpeg;base64,", "").replace("data:image/png;base64,", "")
         if not myFile and not img:
