@@ -105,8 +105,8 @@ def image_loader(url=None, image=None, base64_data=None):
         image = image.resize((256, 256), Image.ANTIALIAS).convert('RGB')
     transform_func = get_transform()
     input = transform_func(image)
-    input = input.unsqueeze(0)
-    # input = input.view(1, 3, 256, 256).to(torch.device('cpu'))
+    # input = input.unsqueeze(0)
+    input = input.view(1, 3, 256, 256).to(torch.device('cpu'))
     return True, input
 
 def get_transform(params=None, grayscale=False, method=Image.BICUBIC, convert=True):
