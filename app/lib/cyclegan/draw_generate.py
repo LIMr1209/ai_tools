@@ -14,8 +14,8 @@ def draw_generate(image=None, base64_data=None, type=None):
     if not res:
         return False, input_tensor
     torch.set_grad_enabled(False)
-    # model = current_app.config['DRAW_MODEL_1']
-    model = load_cycle_single(current_app.config['MODEL_PATH'], draw_generate_category(1)['name'],'{}_net_G_A.pth'.format(current_app.config['DRAW_MODEL_EPOCH_1']), current_app.config['TORCH_GPU'])
+    model = current_app.config['DRAW_MODEL_1']
+    # model = load_cycle_single(current_app.config['MODEL_PATH'], draw_generate_category(1)['name'],'{}_net_G_A.pth'.format(current_app.config['DRAW_MODEL_EPOCH_1']), current_app.config['TORCH_GPU'])
     output = model(input_tensor)
     result = tensor2im(output)
     torch.set_grad_enabled(True)
