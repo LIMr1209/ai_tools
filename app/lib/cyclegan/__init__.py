@@ -110,21 +110,17 @@ def image_loader(url=None, image=None, base64_data=None):
     return True, input
 
 def get_transform(params=None, grayscale=False, method=Image.BICUBIC, convert=True):
-    preprocess = 'resize_and_crop'
-    load_size = 286
-    crop_size = 256
+    preprocess = 'resize'
+    load_size = 256
     no_flip = False  # flip by default
 
     transform_list = []
     if grayscale:
         transform_list.append(transforms.Grayscale(1))
+
     if 'resize' in preprocess:
         osize = [load_size, load_size]
         transform_list.append(transforms.Resize(osize, method))
-
-    if 'crop' in preprocess:
-        if params is None:
-            transform_list.append(transforms.RandomCrop(crop_size))
 
     if not no_flip:
         if params is None:
