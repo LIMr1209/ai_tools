@@ -80,7 +80,7 @@ def __patch_instance_norm_state_dict(state_dict, module, keys, i=0):
 # )
 
 # 加载图片 转换为 input
-def image_loader(url=None, image=None, base64_data=None):
+def image_loader(url=None, image=None, base64_data=None, path=None):
     if url:
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"
@@ -103,6 +103,8 @@ def image_loader(url=None, image=None, base64_data=None):
         image = BytesIO(image)
         image = Image.open(image)
         image = image.resize((256, 256), Image.ANTIALIAS).convert('RGB')
+    elif path:
+        image = Image.open(path).convert('RGB')
     transform_func = get_transform()
     input = transform_func(image)
     # input = input.unsqueeze(0)
