@@ -31,7 +31,7 @@ TORCH_GPU = cf.getint("checkpoint", "torch_gpu", fallback=0)
 DRAW_MODEL_EPOCH_1 = cf.get("checkpoint", "draw_model_epoch_1", fallback='')
 if DRAW_MODEL_EPOCH_1:
     from app.lib.cyclegan import load_cycle_single
-    DRAW_MODEL_1 = load_cycle_single(MODEL_PATH, draw_generate_category(1)['name'],'{}_net_G_A.pth'.format(DRAW_MODEL_EPOCH_1))
+    DRAW_MODEL_1 = load_cycle_single(MODEL_PATH, draw_generate_category(1)['name'],'{}_net_G_A.pth'.format(DRAW_MODEL_EPOCH_1),TORCH_GPU)
 
 # 图像识别模型预加载
 MODEL_NAME = cf.get("ai", "model", fallback='')
