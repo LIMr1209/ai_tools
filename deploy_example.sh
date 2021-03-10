@@ -33,9 +33,6 @@ restart)
         uwsgi --reload /var/run/uwsgi_ai_tools.pid
         echo "restart uwsgi [OK]"
 ;;
-status)
-        uwsgi --connect-and-read /var/log/uwsgi_ai_tools.status
-;;
 *)
     echo "Usages: sh uwsgiserver.sh [start|stop|restart]"
 ;;
