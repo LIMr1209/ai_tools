@@ -3,7 +3,7 @@ import torch
 from flask import current_app
 from app.helpers.constant import draw_generate_category
 from app.helpers.common import img_to_base64
-from app.lib.cyclegan import image_loader, tensor2im
+from app.lib.cyclegan import image_loader, tensor2im,load_cycle_single
 import cv2
 import base64
 
@@ -14,7 +14,9 @@ def draw_generate(image=None, base64_data=None, type=None):
     if not res:
         return False, input_tensor
     torch.set_grad_enabled(False)
-    output = current_app.config['DRAW_MODEL_1'](input_tensor)
+    # model = current_app.config['DRAW_MODEL_1']
+    model = load_cycle_single(current_app.config['MODEL_PATH'], draw_generate_category(1)['name'],'{}_net_G_A.pth'.format(current_app.config['DRAW_MODEL_EPOCH_1']), current_app.config['TORCH_GPU'])
+    output = model(input_tensor)
     result = tensor2im(output)
     torch.set_grad_enabled(True)
     img_new = Image.fromarray(result)
