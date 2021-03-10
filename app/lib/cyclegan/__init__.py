@@ -107,7 +107,7 @@ def image_loader(url=None, image=None, base64_data=None):
     input = transform_func(image)
     # input = input.unsqueeze(0)
     if current_app.config['TORCH_GPU']:
-        input = input.view(1, 3, 256, 256).to(torch.device("cuda:1"))
+        input = input.view(1, 3, 256, 256).to(torch.device('cuda'))
     else:
         input = input.view(1, 3, 256, 256).to(torch.device('cpu'))
     return True, input
@@ -142,7 +142,7 @@ def load_cycle_single(MODEL_PATH, s, file_name, TORCH_GPU):
     complete_path = os.path.join(MODEL_PATH, 'draw', s, file_name)
     if TORCH_GPU:
         model = networks.define_G(
-            3, 3, 64, "resnet_9blocks", "instance", False, "normal", 0.02, [1]
+            3, 3, 64, "resnet_9blocks", "instance", False, "normal", 0.02, [0]
         )
     else:
         model = networks.define_G(

@@ -26,7 +26,7 @@ FACTOR_PATH = cf.get("checkpoint", "factor_path", fallback='')
 #
 #     GS, GS_KWARGS, NOISE_VARS = load_model(STYLEGAN_TE_PATH)
 
-TORCH_GPU = cf.getint("checkpoint", "torch_gpu", fallback=0)
+TORCH_GPU = cf.getboolean("checkpoint", "torch_gpu", fallback=False)
 # 画笔生成模型
 DRAW_MODEL_EPOCH_1 = cf.get("checkpoint", "draw_model_epoch_1", fallback='')
 if DRAW_MODEL_EPOCH_1:

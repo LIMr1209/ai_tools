@@ -4,6 +4,7 @@ redis==3.4.1
 jieba==0.39
 bson==0.5.10
 pandas==0.25.1
+opencv-python
 pillow>=6.2.0
 torch>=1.4.0
 torchvision>=0.5.0
