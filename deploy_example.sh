@@ -13,7 +13,7 @@ export FLASK_ENV=production
 
 case "$1" in
 start)
-        pids=`ps aux | grep "uwsgi" | grep -v "grep" | wc -l`
+        pids=`ps aux | grep "ai_tools/uwsgi.ini" | grep -v "grep" | wc -l`
         if [ $pids -gt 4 ];then
                 uwsgi --ini $current_path/uwsgi.ini --vhost
                 echo "uwsgi is running!"
@@ -32,6 +32,9 @@ stop)
 restart)
         uwsgi --reload /var/run/uwsgi_ai_tools.pid
         echo "restart uwsgi [OK]"
+;;
+status)
+        uwsgi --connect-and-read /var/log/uwsgi_ai_tools.status
 ;;
 *)
     echo "Usages: sh uwsgiserver.sh [start|stop|restart]"
