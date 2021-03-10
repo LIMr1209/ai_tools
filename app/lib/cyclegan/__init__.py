@@ -106,7 +106,10 @@ def image_loader(url=None, image=None, base64_data=None):
     transform_func = get_transform()
     input = transform_func(image)
     # input = input.unsqueeze(0)
-    input = input.view(1, 3, 256, 256).to(torch.device('cpu'))
+    if current_app.config['TORCH_GPU']:
+        input = input.view(1, 3, 256, 256).to(torch.device("cuda:1"))
+    else:
+        input = input.view(1, 3, 256, 256).to(torch.device('cpu'))
     return True, input
 
 def get_transform(params=None, grayscale=False, method=Image.BICUBIC, convert=True):
@@ -135,11 +138,16 @@ def get_transform(params=None, grayscale=False, method=Image.BICUBIC, convert=Tr
     return transforms.Compose(transform_list)
 
 # 加载草图画笔生成模型cycle
-def load_cycle_single(MODEL_PATH, s, file_name):
+def load_cycle_single(MODEL_PATH, s, file_name, TORCH_GPU):
     complete_path = os.path.join(MODEL_PATH, 'draw', s, file_name)
-    model = networks.define_G(
-        3, 3, 64, "resnet_9blocks", "instance", False, "normal", 0.02,
-    )
+    if TORCH_GPU:
+        model = networks.define_G(
+            3, 3, 64, "resnet_9blocks", "instance", False, "normal", 0.02, [1]
+        )
+    else:
+        model = networks.define_G(
+            3, 3, 64, "resnet_9blocks", "instance", False, "normal", 0.02,
+        )
     if isinstance(model, torch.nn.DataParallel):
         model = model.module
     state_dict = torch.load(complete_path)
