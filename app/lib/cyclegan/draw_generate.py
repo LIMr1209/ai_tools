@@ -3,7 +3,7 @@ import torch
 from flask import current_app
 from app.helpers.constant import draw_generate_category
 from app.helpers.common import img_to_base64
-from app.lib.cyclegan import load_cycle_single, image_loader, tensor2im
+from app.lib.cyclegan import image_loader, tensor2im
 import cv2
 import base64
 
