@@ -36,7 +36,6 @@ def tensor2im(input_image, imtype=np.uint8):
     return image_numpy.astype(imtype)
 
 
-
 def __patch_instance_norm_state_dict(state_dict, module, keys, i=0):
     """Fix InstanceNorm checkpoints incompatibility (prior to 0.4)"""
     key = keys[i]
@@ -52,7 +51,6 @@ def __patch_instance_norm_state_dict(state_dict, module, keys, i=0):
             state_dict.pop(".".join(keys))
     else:
         __patch_instance_norm_state_dict(state_dict, getattr(module, key), keys, i + 1)
-
 
 
 # def __crop(img, pos, size):
@@ -111,6 +109,7 @@ def resize_equal(img):
     image = Image.fromarray(cv2.cvtColor(constant, cv2.COLOR_BGR2RGB))
     return image
 
+
 # 加载图片 转换为 input
 def image_loader(url=None, image=None, base64_data=None, path=None):
     if url:
@@ -137,7 +136,7 @@ def image_loader(url=None, image=None, base64_data=None, path=None):
         image = image.resize((256, 256), Image.ANTIALIAS).convert('RGB')
     elif path:
         image = Image.open(path).convert('RGB')
-    w,h = image.size
+    w, h = image.size
     if w != h:
         image = resize_equal(image)
     transform_func = get_transform()
@@ -148,6 +147,7 @@ def image_loader(url=None, image=None, base64_data=None, path=None):
     else:
         input = input.view(1, 3, 256, 256).to(torch.device('cpu'))
     return True, input
+
 
 def get_transform(params=None, grayscale=False, method=Image.BICUBIC, convert=True):
     preprocess = 'resize'
@@ -174,10 +174,13 @@ def get_transform(params=None, grayscale=False, method=Image.BICUBIC, convert=Tr
             transform_list += [transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
     return transforms.Compose(transform_list)
 
-# 加载草图画笔生成模型cycle
-def load_cycle_single(MODEL_PATH, s, file_name, TORCH_GPU):
-    complete_path = os.path.join(MODEL_PATH, 'draw', s, file_name)
-    if TORCH_GPU:
+
+# 加载草图生成模型cycle
+def load_cycle_model(path, index, s, type=''):
+    complete_path = os.path.join(current_app.config["MODEL_PATH"], type, path, s).replace('\\', '/')
+    files = os.listdir(complete_path)
+    files.sort(key=lambda x: int(x[:-12]), reverse=True)
+    if current_app.config['TORCH_GPU']:
         model = networks.define_G(
             3, 3, 64, "resnet_9blocks", "instance", False, "normal", 0.02, [0]
         )
@@ -185,25 +188,6 @@ def load_cycle_single(MODEL_PATH, s, file_name, TORCH_GPU):
         model = networks.define_G(
             3, 3, 64, "resnet_9blocks", "instance", False, "normal", 0.02,
         )
-    if isinstance(model, torch.nn.DataParallel):
-        model = model.module
-    state_dict = torch.load(complete_path)
-    if hasattr(state_dict, "_metadata"):
-        del state_dict._metadata
-    # for key in list(state_dict.keys()):  # need to copy keys here because we mutate in loop
-    #     __patch_instance_norm_state_dict(state_dict, model, key.split('.'))
-    model.load_state_dict(state_dict)
-    model.eval()
-    return model
-
-# 加载草图生成模型cycle
-def load_cycle_model(path, index, s):
-    complete_path = os.path.join(current_app.config["MODEL_PATH"], path, s)
-    files = os.listdir(complete_path)
-    files.sort(key=lambda x: int(x[:-12]), reverse=True)
-    model = networks.define_G(
-        3, 3, 64, "resnet_9blocks", "instance", False, "normal", 0.02,
-    )
     if isinstance(model, torch.nn.DataParallel):
         model = model.module
     state_dict = torch.load(os.path.join(complete_path, files[index]))
@@ -214,6 +198,7 @@ def load_cycle_model(path, index, s):
     model.load_state_dict(state_dict)
     model.eval()
     return model
+
 
 # 加载草图生成模型pix2pix
 def load_pix2pix_model(path, index, s):

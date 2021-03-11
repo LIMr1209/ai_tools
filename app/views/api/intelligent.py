@@ -68,6 +68,7 @@ class DrawGenerate(MethodView):
         data = copy.deepcopy(dataInit)
         myFile = request.files.get("file", None)
         type = force_int(request.values.get("type", 1))
+        index = force_int(request.values.get('index', 0))
         img = request.form.get('image_base64', '')
         img = img.replace("data:image/jpeg;base64,", "").replace("data:image/png;base64,", "")
         if not myFile and not img:
@@ -83,11 +84,15 @@ class DrawGenerate(MethodView):
             data["meta"]["status_code"] = 400
             return data
         from app.lib.cyclegan.draw_generate import draw_generate
-        res, base64_str = draw_generate(base64_data=img, image=myFile, type=type)
+        res, base64_str = draw_generate(base64_data=img, image=myFile, index=index, type=type)
         if not res:
             data["meta"]["message"] = base64_str
             data["meta"]["status_code"] = 500
             return data
         else:
-            data["data"] = base64_str
+            data["data"] = {
+                'img': base64_str,
+                'index': index,
+                'all_index': [0, 1, 2, 3]
+            }
         return jsonify(**data)

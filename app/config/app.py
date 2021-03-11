@@ -1,7 +1,7 @@
 #  常规配置
 import os
 from app.env import cf
-from app.helpers.constant import get_tag, draw_generate_category
+from app.helpers.constant import get_tag
 
 ENV = "development" if cf.getint("base", "debug") == 1 else "production"
 DEBUG = True if cf.getint("base", "debug") == 1 else False  # 当 env 为 development 本变量启动
@@ -27,12 +27,6 @@ FACTOR_PATH = cf.get("checkpoint", "factor_path", fallback='')
 #     GS, GS_KWARGS, NOISE_VARS = load_model(STYLEGAN_TE_PATH)
 
 TORCH_GPU = cf.getboolean("checkpoint", "torch_gpu", fallback=False)
-# 画笔生成模型
-DRAW_MODEL_EPOCH_1 = cf.get("checkpoint", "draw_model_epoch_1", fallback='')
-# if DRAW_MODEL_EPOCH_1:
-    # from app.lib.cyclegan import load_cycle_single
-    # DRAW_MODEL_1 = load_cycle_single(MODEL_PATH, draw_generate_category(1)['name'],'{}_net_G_A.pth'.format(DRAW_MODEL_EPOCH_1),TORCH_GPU)
-
 # 图像识别模型预加载
 MODEL_NAME = cf.get("ai", "model", fallback='')
 LOAD_MODEL_PATH = cf.get("ai", "load_model_path", fallback='')
