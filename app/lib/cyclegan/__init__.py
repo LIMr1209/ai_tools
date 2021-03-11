@@ -1,6 +1,8 @@
 import base64
 import os
 from io import BytesIO
+
+import cv2
 import numpy as np
 import requests
 import torch
@@ -79,6 +81,36 @@ def __patch_instance_norm_state_dict(state_dict, module, keys, i=0):
 #     ]
 # )
 
+def resize_equal(img):
+    image = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
+    top, bottom, left, right = (0, 0, 0, 0)
+
+    # 获取图像尺寸
+    h, w, _ = image.shape
+
+    # 对于长宽不相等的图片，找到最长的一边
+    longest_edge = max(h, w)
+
+    # 计算短边需要增加多上像素宽度使其与长边等长
+    if h < longest_edge:
+        dh = longest_edge - h
+        top = dh // 2
+        bottom = dh - top
+    elif w < longest_edge:
+        dw = longest_edge - w
+        left = dw // 2
+        right = dw - left
+    else:
+        pass
+
+    # RGB颜色
+    color = [255, 255, 255]
+
+    # 给图像增加边界，是图片长、宽等长，cv2.BORDER_CONSTANT指定边界颜色由value指定
+    constant = cv2.copyMakeBorder(image, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)
+    image = Image.fromarray(cv2.cvtColor(constant, cv2.COLOR_BGR2RGB))
+    return image
+
 # 加载图片 转换为 input
 def image_loader(url=None, image=None, base64_data=None, path=None):
     if url:
@@ -105,6 +137,9 @@ def image_loader(url=None, image=None, base64_data=None, path=None):
         image = image.resize((256, 256), Image.ANTIALIAS).convert('RGB')
     elif path:
         image = Image.open(path).convert('RGB')
+    w,h = image.size
+    if w != h:
+        image = resize_equal(image)
     transform_func = get_transform()
     input = transform_func(image)
     # input = input.unsqueeze(0)
@@ -117,7 +152,7 @@ def image_loader(url=None, image=None, base64_data=None, path=None):
 def get_transform(params=None, grayscale=False, method=Image.BICUBIC, convert=True):
     preprocess = 'resize'
     load_size = 256
-    no_flip = False  # flip by default
+    no_flip = True  # 不翻转
 
     transform_list = []
     if grayscale:
