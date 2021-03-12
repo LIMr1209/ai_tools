@@ -120,11 +120,11 @@ class DrawGenerate(MethodView):
 # 图片融合发散
 @api.expose("/fuse/divergence")
 class FuseDivergence(MethodView):
-    methods = ["POST"]
+    methods = ["GET"]
 
     # decorators = [user_required]
 
-    def post(self):
+    def get(self):
         data = copy.deepcopy(dataInit)
         # type = force_int(request.values.get("type", 1))
         # index = force_int(request.values.get('index', 0))
