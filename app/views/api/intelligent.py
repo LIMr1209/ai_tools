@@ -120,7 +120,7 @@ class DrawGenerate(MethodView):
 # 图片融合发散
 @api.expose("/fuse/divergence")
 class FuseDivergence(MethodView):
-    methods = ["POST", 'GET']
+    methods = ["POST"]
 
     # decorators = [user_required]
 
@@ -128,7 +128,7 @@ class FuseDivergence(MethodView):
         data = copy.deepcopy(dataInit)
         type = force_int(request.values.get("type", 1))
         index = force_int(request.values.get('index', 0))
-        img_1 = request.values.get('image_1_base64', '')
+        img_1 = request.form.get('image_1_base64', '')
         img_2 = request.values.get('image_2_base64', '')
         img_1 = img_1.replace("data:image/jpeg;base64,", "").replace("data:image/png;base64,", "")
         img_2 = img_2.replace("data:image/jpeg;base64,", "").replace("data:image/png;base64,", "")
@@ -140,34 +140,9 @@ class FuseDivergence(MethodView):
         #     data["meta"]["message"] = "请选择正确的生成类型"
         #     data["meta"]["status_code"] = 400
         #     return data
-        img_1_base = pil_to_base64('static/image/1_1_result.jpg')
-        img_2_base = pil_to_base64('static/image/1_2_result.jpg')
-        img_3_base = pil_to_base64('static/image/1_3_result.jpg')
-        img_4_base = pil_to_base64('static/image/1_4_result.jpg')
+        img_1_base = pil_to_base64('1_result.jpg')
+        img_2_base = pil_to_base64('1_result.jpg')
+        img_3_base = pil_to_base64('1_result.jpg')
+        img_4_base = pil_to_base64('1_result.jpg')
         data["data"] = [img_1_base,img_2_base,img_3_base,img_4_base]
-        current_app.logger.warning(data)
-        return jsonify(**data)
-
-    def get(self):
-        data = copy.deepcopy(dataInit)
-        type = force_int(request.values.get("type", 1))
-        index = force_int(request.values.get('index', 0))
-        img_1 = request.values.get('image_1_base64', '')
-        img_2 = request.values.get('image_2_base64', '')
-        # img_1 = img_1.replace("data:image/jpeg;base64,", "").replace("data:image/png;base64,", "")
-        # img_2 = img_2.replace("data:image/jpeg;base64,", "").replace("data:image/png;base64,", "")
-        # if not img_1 and not img_2:
-        #     data["meta"]["message"] = "图片参数错误"
-        #     data["meta"]["stat    us_code"] = 400
-        #     return data
-        # if type not in list(map(lambda x: x["id"], draw_generate_category())):
-        #     data["meta"]["message"] = "请选择正确的生成类型"
-        #     data["meta"]["status_code"] = 400
-        #     return data
-        img_1_base = pil_to_base64('static/image/1_1_result.jpg')
-        img_2_base = pil_to_base64('static/image/1_2_result.jpg')
-        img_3_base = pil_to_base64('static/image/1_3_result.jpg')
-        img_4_base = pil_to_base64('static/image/1_4_result.jpg')
-        data["data"] = [img_1,img_2,img_3_base,img_4_base]
-        current_app.logger.warning(data)
         return jsonify(**data)
