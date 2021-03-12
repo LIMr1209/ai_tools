@@ -130,8 +130,8 @@ class FuseDivergence(MethodView):
         index = force_int(request.values.get('index', 0))
         img_1 = request.values.get('image_1_base64', '')
         img_2 = request.values.get('image_2_base64', '')
-        # img_1 = img_1.replace("data:image/jpeg;base64,", "").replace("data:image/png;base64,", "")
-        # img_2 = img_2.replace("data:image/jpeg;base64,", "").replace("data:image/png;base64,", "")
+        img_1 = img_1.replace("data:image/jpeg;base64,", "").replace("data:image/png;base64,", "")
+        img_2 = img_2.replace("data:image/jpeg;base64,", "").replace("data:image/png;base64,", "")
         # if not img_1 and not img_2:
         #     data["meta"]["message"] = "图片参数错误"
         #     data["meta"]["stat    us_code"] = 400
@@ -144,7 +144,7 @@ class FuseDivergence(MethodView):
         img_2_base = pil_to_base64('static/image/1_2_result.jpg')
         img_3_base = pil_to_base64('static/image/1_3_result.jpg')
         img_4_base = pil_to_base64('static/image/1_4_result.jpg')
-        data["data"] = [img_1,img_2,img_3_base,img_4_base]
+        data["data"] = [img_1_base,img_2_base,img_3_base,img_4_base]
         current_app.logger.warning(data)
         return jsonify(**data)
 
