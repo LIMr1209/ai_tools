@@ -3,7 +3,7 @@ import base64
 import datetime
 import re
 from io import BytesIO
-
+from PIL import Image
 from werkzeug import security
 
 # 加密
@@ -117,3 +117,10 @@ def img_to_base64(img):
     base64_str = base64.b64encode(byte_data)
     base64_str = "data:image/jpg;base64," + base64_str.decode(encoding="ascii")
     return base64_str
+
+
+
+def pil_to_base64(file):
+    image = Image.open(file).convert("RGB")
+    image_base64 = img_to_base64(image)
+    return image_base64
