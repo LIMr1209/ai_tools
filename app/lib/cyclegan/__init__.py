@@ -132,8 +132,8 @@ def image_loader(load_size, url=None, image=None, base64_data=None, path=None):
     elif base64_data:
         image = base64.b64decode(base64_data)
         image = BytesIO(image)
-        image = Image.open(image)
-        image = image.resize((256, 256), Image.ANTIALIAS).convert('RGB')
+        image = Image.open(image).convert('RGB')
+        # image = image.resize((256, 256), Image.ANTIALIAS).convert('RGB')
     elif path:
         image = Image.open(path).convert('RGB')
     w, h = image.size
