@@ -120,7 +120,7 @@ class DrawGenerate(MethodView):
 # 图片融合发散
 @api.expose("/fuse/divergence")
 class FuseDivergence(MethodView):
-    methods = ["GET"]
+    methods = ["GET",'POST']
 
     # decorators = [user_required]
 
@@ -145,4 +145,13 @@ class FuseDivergence(MethodView):
         img_3_base = pil_to_base64('static/image/1_3_result.jpg')
         img_4_base = pil_to_base64('static/image/1_4_result.jpg')
         data["data"] = [img_1_base,img_2_base,img_3_base,img_4_base]
+        return jsonify(**data)
+
+    def post(self):
+        data = copy.deepcopy(dataInit)
+        img_1_base = pil_to_base64('static/image/1_1_result.jpg')
+        img_2_base = pil_to_base64('static/image/1_2_result.jpg')
+        img_3_base = pil_to_base64('static/image/1_3_result.jpg')
+        img_4_base = pil_to_base64('static/image/1_4_result.jpg')
+        data["data"] = [img_1_base, img_2_base, img_3_base, img_4_base]
         return jsonify(**data)
