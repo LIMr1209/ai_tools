@@ -111,7 +111,7 @@ def resize_equal(img):
 
 
 # 加载图片 转换为 input
-def image_loader(url=None, image=None, base64_data=None, path=None):
+def image_loader(load_size, url=None, image=None, base64_data=None, path=None):
     if url:
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"
@@ -139,19 +139,18 @@ def image_loader(url=None, image=None, base64_data=None, path=None):
     w, h = image.size
     if w != h:
         image = resize_equal(image)
-    transform_func = get_transform()
+    transform_func = get_transform(load_size)
     input = transform_func(image)
     # input = input.unsqueeze(0)
     if current_app.config['TORCH_GPU']:
-        input = input.view(1, 3, 256, 256).to(torch.device('cuda'))
+        input = input.view(1, 3, load_size, load_size).to(torch.device('cuda'))
     else:
-        input = input.view(1, 3, 256, 256).to(torch.device('cpu'))
+        input = input.view(1, 3, load_size, load_size).to(torch.device('cpu'))
     return True, input
 
 
-def get_transform(params=None, grayscale=False, method=Image.BICUBIC, convert=True):
+def get_transform(load_size, params=None, grayscale=False, method=Image.BICUBIC, convert=True):
     preprocess = 'resize'
-    load_size = 256
     no_flip = True  # 不翻转
 
     transform_list = []

@@ -7,7 +7,7 @@ from app.lib.cyclegan import image_loader, tensor2im,load_cycle_model
 
 # demo  绘制草图生成
 def draw_generate(image=None, base64_data=None, index=0, type=None, model_name='cycle'):
-    res, input_tensor = image_loader(image=image, base64_data=base64_data)
+    res, input_tensor = image_loader(256, image=image, base64_data=base64_data)
     if not res:
         return False, input_tensor
     torch.set_grad_enabled(False)

@@ -23,9 +23,9 @@ def intelligent(url=None, image=None, index=0, type=None, model_name='cycle'):
     input_tensor = ''
     res = ''
     if url:
-        res, input_tensor = image_loader(url=url)
+        res, input_tensor = image_loader(256,url=url)
     elif image:
-        res, input_tensor = image_loader(image=image)
+        res, input_tensor = image_loader(256,image=image)
     if not res:
         return False, input_tensor
     torch.set_grad_enabled(False)
