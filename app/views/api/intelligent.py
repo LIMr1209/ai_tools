@@ -140,9 +140,9 @@ class FuseDivergence(MethodView):
         #     data["meta"]["message"] = "请选择正确的生成类型"
         #     data["meta"]["status_code"] = 400
         #     return data
-        img_1_base = pil_to_base64('1_1_result.jpg')
-        img_2_base = pil_to_base64('1_2_result.jpg')
-        img_3_base = pil_to_base64('1_3_result.jpg')
-        img_4_base = pil_to_base64('1_4_result.jpg')
+        img_1_base = pil_to_base64('static/image/1_1_result.jpg')
+        img_2_base = pil_to_base64('static/image/1_2_result.jpg')
+        img_3_base = pil_to_base64('static/image/1_3_result.jpg')
+        img_4_base = pil_to_base64('static/image/1_4_result.jpg')
         data["data"] = [img_1_base,img_2_base,img_3_base,img_4_base]
         return jsonify(**data)
