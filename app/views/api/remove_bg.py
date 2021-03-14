@@ -13,16 +13,12 @@ class ImageRemoveBg(MethodView):
     def post(self):
         data = copy.deepcopy(dataInit)
         f = request.files.get("file", None)
-        url = request.args.get("url", "")
-        if not f or not url:
+        if not f:
             data["meta"]["message"] = "请上传图片文件"
             data["meta"]["status_code"] = 400
             return jsonify(**data)
         try:
-            if f:
-                success, data = remove(image=f)
-            else:
-                success, data = remove(url=url)
+            success, data = remove(image=f)
             if success:
                 data['data'] = data
             else:
@@ -32,5 +28,25 @@ class ImageRemoveBg(MethodView):
             data["meta"]["message"] = str(e)
             data["meta"]["status_code"] = 500
         return jsonify(**data)
+
+    def get(self):
+        data = copy.deepcopy(dataInit)
+        url = request.args.get("url", "")
+        if not url:
+            data["meta"]["message"] = "请传入图片链接"
+            data["meta"]["status_code"] = 400
+            return jsonify(**data)
+        try:
+            success, data = remove(url=url)
+            if success:
+                data['data'] = data
+            else:
+                data["meta"]["message"] = data
+                data["meta"]["status_code"] = 500
+        except Exception as e:
+            data["meta"]["message"] = str(e)
+            data["meta"]["status_code"] = 500
+        return jsonify(**data)
+
 
 

@@ -5,12 +5,12 @@ jieba==0.39
 bson==0.5.10
 pandas==0.25.1
 opencv-python
-pillow>=6.2.0
+pillow==7.2.0
 torch>=1.4.0
 torchvision>=0.5.0
 gevent-websocket==0.10.1
 requests
 efficientnet_pytorch
-scikit-image
+scikit-image==0.18.1
 tensorflow-gpu==1.15
 # uWSGI==2.0.18
