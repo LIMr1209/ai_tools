@@ -6,7 +6,7 @@ from flask.views import MethodView
 from app.helpers.common import pil_to_base64
 from app.helpers.constant import intelligent_category, draw_generate_category
 
-dataInit = {"data": "", "meta": {"message": "", "status_code": 200, }}
+dataInit = {"data": [], "meta": {"message": "", "status_code": 200, }}
 
 
 @api.expose("/intelligent/category")
