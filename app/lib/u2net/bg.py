@@ -5,14 +5,15 @@ import requests
 from PIL import Image
 from flask import current_app
 from app.lib.u2net import detect
+from app.lib.u2net.detect import load_model
 from app.helpers.common import formatSize, img_to_base64
 
 
 def remove(image=None, url=None, model_name="u2netp"):
     if model_name == "u2netp":
-        model = current_app.config["U2NETP_MODEL"]
+        model = load_model(model_name="u2netp")
     else:
-        model = current_app.config["U2NET_MODEL"]
+        model = load_model(model_name="u2net")
     if image:
         f_size = formatSize(len(image.read()))
         if f_size > 5:

@@ -40,14 +40,14 @@ if LOAD_MODEL_PATH:
 # 图像去背景模型预加载
 U2NETP_PATH = cf.get("checkpoint", "u2netp_path", fallback='')
 
-if U2NETP_PATH:
-    from app.lib.u2net.detect import load_model
-
-    U2NETP_MODEL = load_model(path=U2NETP_PATH)
+# if U2NETP_PATH:
+#     from app.lib.u2net.detect import load_model
+#
+#     U2NETP_MODEL = load_model(path=U2NETP_PATH, TORCH_GPU=TORCH_GPU)
 
 # 图像去背景模型预加载
 U2NET_PATH = cf.get("checkpoint", "u2net_path", fallback='')
-if U2NET_PATH:
-    from app.lib.u2net.detect import load_model
-
-    U2NET_MODEL = load_model(model_name="u2net", path=U2NET_PATH, TORCH_GPU=TORCH_GPU)
+# if U2NET_PATH:
+#     from app.lib.u2net.detect import load_model
+#
+#     U2NET_MODEL = load_model(model_name="u2net", path=U2NET_PATH, TORCH_GPU=TORCH_GPU)
