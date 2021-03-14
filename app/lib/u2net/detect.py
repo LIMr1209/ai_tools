@@ -69,7 +69,7 @@ def predict(net, item):
     with torch.no_grad():
         inputs_test = torch.FloatTensor(sample["image"].unsqueeze(0).float())
         if current_app.config['TORCH_GPU']:
-            inputs_test.to('cuda:1')
+            inputs_test = inputs_test.to('cuda:1')
         # if torch.cuda.is_available():
         #     inputs_test = torch.cuda.FloatTensor(sample["image"].unsqueeze(0).float())
         # else:
