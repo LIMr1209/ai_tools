@@ -1,7 +1,7 @@
 import copy
 from flask import request, jsonify
 from flask.views import MethodView
-from app.views import api
+from . import api
 from app.lib.u2net.bg import remove
 
 dataInit = {"data": "", "meta": {"message": "", "status_code": 200, }}
