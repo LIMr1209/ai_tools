@@ -38,7 +38,7 @@ if LOAD_MODEL_PATH:
 
     MODEL = load_model(NUM_CLASSES, LOAD_MODEL_PATH, MODEL_NAME)
 # 图像去背景模型预加载
-U2NETP_PATH = cf.get("ai", "u2netp_path", fallback='')
+U2NETP_PATH = cf.get("checkpoint", "u2netp_path", fallback='')
 
 if U2NETP_PATH:
     from app.lib.u2net.detect import load_model
@@ -46,7 +46,7 @@ if U2NETP_PATH:
     U2NETP_MODEL = load_model(path=U2NETP_PATH)
 
 # 图像去背景模型预加载
-U2NET_PATH = cf.get("ai", "u2net_path", fallback='')
+U2NET_PATH = cf.get("checkpoint", "u2net_path", fallback='')
 if U2NET_PATH:
     from app.lib.u2net.detect import load_model
 

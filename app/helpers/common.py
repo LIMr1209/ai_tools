@@ -124,3 +124,11 @@ def pil_to_base64(file):
     image = Image.open(file).convert("RGB")
     image_base64 = img_to_base64(image)
     return image_base64
+
+# 纯色
+def bool_simple(img):
+    a,b = img.convert("L").getextrema()
+    if a == b:
+        return True
+    else:
+        return False

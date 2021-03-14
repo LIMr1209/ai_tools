@@ -136,6 +136,9 @@ def image_loader(load_size, url=None, image=None, base64_data=None, path=None):
         # image = image.resize((256, 256), Image.ANTIALIAS).convert('RGB')
     elif path:
         image = Image.open(path).convert('RGB')
+    simple_img = bool_simple(image) # 判断纯色
+    if simple_img:
+        return False, "纯色图片"
     w, h = image.size
     if w != h:
         image = resize_equal(image)
