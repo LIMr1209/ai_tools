@@ -209,7 +209,7 @@ def image_loader(load_size, url=None, image=None, base64_data=None, path=None):
     simple_img = bool_simple(image) # 判断纯色
     if simple_img:
         return False, "纯色图片"
-    image = crop_and_normalize(image)
+    # image = crop_and_normalize(image)
     w, h = image.size
     if w != h:
         image = resize_equal(image) # 等 宽 高
