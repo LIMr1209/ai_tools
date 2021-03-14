@@ -17,10 +17,9 @@ def load_model(model_name: str = "u2netp", path: str = "", TORCH_GPU: bool = Fal
         print("Choose between u2net or u2netp", file=sys.stderr)
         return None
     try:
+        net.load_state_dict(torch.load(path))
         if TORCH_GPU:
-            net.load_state_dict(torch.load(path, map_location="cuda"))
-        else:
-            net.load_state_dict(torch.load(path, map_location="cpu"))
+            net.cuda()
     except FileNotFoundError:
         raise FileNotFoundError(
             errno.ENOENT, os.strerror(errno.ENOENT), model_name + ".pth"
