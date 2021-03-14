@@ -137,7 +137,7 @@ class FuseDivergence(MethodView):
         data["data"] = []
         if not file_name1 or not file_name2:
             return jsonify(**data)
-        if not file_name1.endswith('_1_origin.png') or not file_name2.endswith('_2_origin.png'):
+        if not file_name1.endswith('_origin.png') or not file_name2.endswith('_origin.png'):
             return jsonify(**data)
         try:
             group = file_name1.split('_')[0]
