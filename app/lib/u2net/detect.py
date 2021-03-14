@@ -67,11 +67,13 @@ def predict(net, item):
     sample = preprocess(item)
 
     with torch.no_grad():
-
-        if torch.cuda.is_available():
-            inputs_test = torch.cuda.FloatTensor(sample["image"].unsqueeze(0).float())
-        else:
-            inputs_test = torch.FloatTensor(sample["image"].unsqueeze(0).float())
+        inputs_test = torch.FloatTensor(sample["image"].unsqueeze(0).float())
+        if current_app.config['TORCH_GPU']:
+            inputs_test.to('cuda:1')
+        # if torch.cuda.is_available():
+        #     inputs_test = torch.cuda.FloatTensor(sample["image"].unsqueeze(0).float())
+        # else:
+        #     inputs_test = torch.FloatTensor(sample["image"].unsqueeze(0).float())
 
         d1, d2, d3, d4, d5, d6, d7 = net(inputs_test)
 
