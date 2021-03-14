@@ -50,4 +50,4 @@ U2NET_PATH = cf.get("ai", "u2net_path", fallback='')
 if U2NET_PATH:
     from app.lib.u2net.detect import load_model
 
-    U2NET_MODEL = load_model(model_name="u2net", path=U2NET_PATH)
+    U2NET_MODEL = load_model(model_name="u2net", path=U2NET_PATH, TORCH_GPU=TORCH_GPU)

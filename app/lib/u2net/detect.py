@@ -8,16 +8,19 @@ from torchvision import transforms
 from . import data_loader, u2net
 
 
-def load_model(model_name: str = "u2netp", path: str = ""):
+def load_model(model_name: str = "u2netp", path: str = "", TORCH_GPU: bool = False):
     if model_name == "u2netp":
         net = u2net.U2NETP(3, 1)
     elif model_name == "u2net":
         net = u2net.U2NET(3, 1)
     else:
         print("Choose between u2net or u2netp", file=sys.stderr)
-
+        return None
     try:
-        net.load_state_dict(torch.load(path, map_location="cuda:2",))
+        if TORCH_GPU:
+            net.load_state_dict(torch.load(path, map_location="cuda:2"))
+        else:
+            net.load_state_dict(torch.load(path, map_location="cpu"))
     except FileNotFoundError:
         raise FileNotFoundError(
             errno.ENOENT, os.strerror(errno.ENOENT), model_name + ".pth"
