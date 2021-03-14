@@ -206,11 +206,9 @@ def image_loader(load_size, url=None, image=None, base64_data=None, path=None):
     if simple_img:
         return False, "纯色图片"
     image = crop_and_normalize(image)
-    image.save('111.jpg')
     w, h = image.size
     if w != h:
         image = resize_equal(image) # 等 宽 高
-    image.save('222.jpg')
     transform_func = get_transform(load_size)
     input = transform_func(image)
     # input = input.unsqueeze(0)
