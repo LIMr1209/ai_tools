@@ -128,7 +128,7 @@ def pil_to_base64(file):
 # 纯色
 def bool_simple(img):
     a,b = img.convert("L").getextrema()
-    if a == b:
+    if abs(a - b) < 20:
         return True
     else:
         return False
