@@ -9,7 +9,7 @@ import torch
 from PIL import Image
 from flask import current_app
 from torchvision import transforms as T, transforms
-from app.helpers.common import formatSize
+from app.helpers.common import formatSize, bool_simple
 from app.lib.cyclegan import networks
 
 
