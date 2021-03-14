@@ -18,7 +18,7 @@ def load_model(model_name: str = "u2netp", path: str = "", TORCH_GPU: bool = Fal
         return None
     try:
         if TORCH_GPU:
-            net.load_state_dict(torch.load(path, map_location="cuda:2"))
+            net.load_state_dict(torch.load(path, map_location="cuda"))
         else:
             net.load_state_dict(torch.load(path, map_location="cpu"))
     except FileNotFoundError:
