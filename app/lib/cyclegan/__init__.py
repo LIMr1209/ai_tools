@@ -78,29 +78,72 @@ def __patch_instance_norm_state_dict(state_dict, module, keys, i=0):
 #         T.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
 #     ]
 # )
+# def crop_and_normalize(pil_img, offset=20):
+#     img_array = np.array(pil_img.convert('L'))
+#     boundary = np.argwhere(img_array == 0)
+#     x = [element[1] for element in boundary]
+#     y = [element[0] for element in boundary]
+#
+#     long_edge = max(max(x) - min(x), max(y) - min(y))
+#     half = int(long_edge / 2)
+#     centerX, centerY = int((min(x) + max(x)) / 2), int((min(y) + max(y)) / 2)
+#
+#     left, up, right, down = centerX - half - offset, centerY - half - offset, centerX + half + offset, centerY + half + offset
+#
+#     left = 0 if left < 0 else left
+#     up = 0 if up < 0 else up
+#     right = 256 if right > 256 else right
+#     down = 256 if down > 256 else down
+#
+#     box = (left, up, right, down)
+#     crop_img = pil_img.crop(box)
+#
+#     return crop_img
+
+
 def crop_and_normalize(pil_img, offset=20):
-    img_array = np.array(pil_img.convert('L'))
-    boundary = np.argwhere(img_array == 0)
-    x = [element[1] for element in boundary]
-    y = [element[0] for element in boundary]
-
-    long_edge = max(max(x) - min(x), max(y) - min(y))
-    half = int(long_edge / 2)
-    centerX, centerY = int((min(x) + max(x)) / 2), int((min(y) + max(y)) / 2)
-
-    left, up, right, down = centerX - half - offset, centerY - half - offset, centerX + half + offset, centerY + half + offset
-
-    left = 0 if left < 0 else left
-    up = 0 if up < 0 else up
-    right = 256 if right > 256 else right
-    down = 256 if down > 256 else down
+    w,h = pil_img.size
+    for x in range(0, w):
+        for y in range(0, h):
+            a, b, c = pil_img.getpixel((x, y))
+            if a < 10 or b<10 or c <10:
+                left = x-20
+                break
+        else:
+            continue
+        break
+    for y in range(0, h):
+        for x in range(0, w):
+            a, b, c = pil_img.getpixel((x, y))
+            if a < 10 or b<10 or c <10:
+                up = y-20
+                break
+        else:
+            continue
+        break
+    for x in range(w-1, 0,-1):
+        for y in range(h-1,0,-1):
+            a, b, c = pil_img.getpixel((x, y))
+            if a < 10 or b<10 or c <10:
+                right = x+20
+                break
+        else:
+            continue
+        break
+    for y in range(h - 1, 0, -1):
+        for x in range(w - 1, 0, -1):
+            a, b, c = pil_img.getpixel((x, y))
+            if a < 10 or b < 10 or c < 10:
+                down = y+20
+                break
+        else:
+            continue
+        break
 
     box = (left, up, right, down)
     crop_img = pil_img.crop(box)
 
     return crop_img
-
-
 
 def resize_equal(img):
     image = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
@@ -162,11 +205,12 @@ def image_loader(load_size, url=None, image=None, base64_data=None, path=None):
     simple_img = bool_simple(image) # 判断纯色
     if simple_img:
         return False, "纯色图片"
+    image = crop_and_normalize(image)
+    image.save('111.jpg')
     w, h = image.size
     if w != h:
         image = resize_equal(image) # 等 宽 高
-    image = crop_and_normalize(image)
-    image.save('test.jpg')
+    image.save('222.jpg')
     transform_func = get_transform(load_size)
     input = transform_func(image)
     # input = input.unsqueeze(0)
