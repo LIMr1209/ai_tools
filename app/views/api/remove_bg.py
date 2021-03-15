@@ -32,12 +32,14 @@ class ImageRemoveBg(MethodView):
     def get(self):
         data = copy.deepcopy(dataInit)
         url = request.args.get("url", "")
+        base64_data = request.args.get('image_base64','')
+        base64_data = base64_data.replace("data:image/jpeg;base64,", "").replace("data:image/png;base64,", "").replace("data:image/jpg;base64,", "")
         if not url:
             data["meta"]["message"] = "请传入图片链接"
             data["meta"]["status_code"] = 400
             return jsonify(**data)
         try:
-            success, data = remove(url=url)
+            success, data = remove(url=url,base64_data=base64_data)
             if success:
                 data['data'] = data
             else:

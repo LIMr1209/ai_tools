@@ -9,7 +9,7 @@ from app.lib.u2net.detect import load_model
 from app.helpers.common import formatSize, img_to_base64
 
 
-def remove(image=None, url=None, model_name="u2netp"):
+def remove(image=None, url=None, base64_data=base64_data, model_name="u2netp"):
     if model_name == "u2netp":
         model = load_model(model_name="u2netp")
     else:
@@ -19,6 +19,10 @@ def remove(image=None, url=None, model_name="u2netp"):
         if f_size > 5:
             return False, "传入图片需小于5M"
         img = Image.open(image).convert("RGB")
+    elif base64_data:
+        image = base64.b64decode(base64_data)
+        image = io.BytesIO(image)
+        img = Image.open(image).convert('RGB')
     elif url:
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"
