@@ -15,7 +15,7 @@ class ImageRemoveBg(MethodView):
         f = request.files.get("file", None)
         base64_data = request.values.get('image_base64','')
         base64_data = base64_data.replace("data:image/jpeg;base64,", "").replace("data:image/png;base64,", "").replace("data:image/jpg;base64,", "")
-        if not f:
+        if not f or not base64_data:
             data["meta"]["message"] = "请上传图片文件"
             data["meta"]["status_code"] = 400
             return jsonify(**data)
