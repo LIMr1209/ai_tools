@@ -3,7 +3,6 @@ from . import api
 from app.helpers.common import force_int
 import copy
 from flask.views import MethodView
-from app.lib.stylegan.demo import get_sample as py_sample
 from app.lib.stylegan_tensorflow.demo import get_sample as te_sample
 from flask import Flask, render_template, request
 # pip install gevent-websocket导入IO多路复用模块

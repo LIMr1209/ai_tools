@@ -4,7 +4,7 @@ from flask.views import MethodView
 from . import api
 from app.lib.u2net.bg import remove
 
-dataInit = {"data": "", "meta": {"message": "", "status_code": 200, }}
+dataInit = {"data": [], "meta": {"message": "", "status_code": 200, }}
 ## 图片去底
 @api.expose('/image/removebg')
 class ImageRemoveBg(MethodView):
@@ -18,9 +18,9 @@ class ImageRemoveBg(MethodView):
             data["meta"]["status_code"] = 400
             return jsonify(**data)
         try:
-            success, data = remove(image=f)
+            success, base_64 = remove(image=f)
             if success:
-                data['data'] = data
+                data['data'] = base_64
             else:
                 data["meta"]["message"] = data
                 data["meta"]["status_code"] = 500
