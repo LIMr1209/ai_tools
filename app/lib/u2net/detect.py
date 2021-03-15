@@ -65,13 +65,14 @@ def predict(net, item):
     sample = preprocess(item)
 
     with torch.no_grad():
-        # inputs_test = torch.FloatTensor(sample["image"].unsqueeze(0).float())
-        # if current_app.config['TORCH_GPU']:
-        #     inputs_test = inputs_test.to('cuda:1')
+        inputs_test = torch.FloatTensor(sample["image"].unsqueeze(0).float())
         if current_app.config['TORCH_GPU']:
-            inputs_test = torch.cuda.FloatTensor(sample["image"].unsqueeze(0).float())
-        else:
-            inputs_test = torch.FloatTensor(sample["image"].unsqueeze(0).float())
+            device = torch.device('cuda:1')
+            inputs_test = inputs_test.to(device)
+        # if current_app.config['TORCH_GPU']:
+        #     inputs_test = torch.cuda.FloatTensor(sample["image"].unsqueeze(0).float())
+        # else:
+        #     inputs_test = torch.FloatTensor(sample["image"].unsqueeze(0).float())
         # if torch.cuda.is_available():
         #     inputs_test = torch.cuda.FloatTensor(sample["image"].unsqueeze(0).float())
         # else:
