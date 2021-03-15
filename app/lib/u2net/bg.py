@@ -9,7 +9,7 @@ from app.lib.u2net.detect import load_model
 from app.helpers.common import formatSize, img_to_base64
 
 
-def remove(image=None, url=None, base64_data=base64_data, model_name="u2netp"):
+def remove(image=None, url=None, base64_data=None, model_name="u2netp"):
     if model_name == "u2netp":
         model = load_model(model_name="u2netp")
     else:
