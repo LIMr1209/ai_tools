@@ -119,63 +119,6 @@ def crop_and_normalize(pil_img, offset=20):
     return crop_img
 
 
-def crop_and_normalize_1(pil_img, offset=20):
-    w,h = pil_img.size
-    for x in range(0, w):
-        for y in range(0, h):
-            a, b, c = pil_img.getpixel((x, y))
-            if a < 10 or b<10 or c <10:
-                if x - offset < 0:
-                    left = x
-                else:
-                    left = x - offset
-                break
-        else:
-            continue
-        break
-    for y in range(0, h):
-        for x in range(0, w):
-            a, b, c = pil_img.getpixel((x, y))
-            if a < 10 or b<10 or c <10:
-                if y - offset < 0:
-                    up = y
-                else:
-                    up = y - offset
-                break
-        else:
-            continue
-        break
-    for x in range(w-1, 0,-1):
-        for y in range(h-1,0,-1):
-            a, b, c = pil_img.getpixel((x, y))
-            if a < 10 or b<10 or c <10:
-                if x + offset > w:
-                    right = x
-                else:
-                    right = x + offset
-                break
-        else:
-            continue
-        break
-    for y in range(h - 1, 0, -1):
-        for x in range(w - 1, 0, -1):
-            a, b, c  = pil_img.getpixel((x, y))
-            if a < 10 or b<10 or c <10:
-                if y + offset > h:
-                    down = y
-                else:
-                    down = y + offset
-                break
-        else:
-            continue
-        break
-
-    box = (left, up, right, down)
-    crop_img = pil_img.crop(box)
-    return crop_img
-
-
-
 def resize_equal(img):
     image = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
     top, bottom, left, right = (0, 0, 0, 0)
