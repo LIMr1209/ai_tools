@@ -101,7 +101,7 @@ def project(
         optimizer.step()
         losses.append({
             'step': step,
-            'loss': round(loss, 2),
+            'loss': round(float(loss), 2),
         })
 
         # Save projected W for each optimization step.

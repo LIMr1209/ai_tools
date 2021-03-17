@@ -146,11 +146,15 @@ class FuseDivergence(MethodView):
         # for i in range(1, 5):
         #     img = pil_to_base64('static/image/{}_{}_result.jpg'.format(group, i))
         #     data["data"].append(img)
-        try:
-            from projector import run_projection
-            image_base64_1, image_base64_2, image_base64_3, image_base64_4 = run_projection(img_1,img_2)
-            data["data"] = [image_base64_1,image_base64_2,image_base64_3,image_base64_4]
-        except Exception as e:
-            data["meta"]["message"] = str(e)
-            data["meta"]["status_code"] = 500
+        # if not img_1 and not img_2:
+        #     data["meta"]["message"] = "图片参数错误"
+        #     data["meta"]["status_code"] = 400
+        #     return data
+        # try:
+        from projector import run_projection
+        image_base64_1, image_base64_2, image_base64_3, image_base64_4 = run_projection(img_1,img_2)
+        data["data"] = [image_base64_1,image_base64_2,image_base64_3,image_base64_4]
+        # except Exception as e:
+        #     data["meta"]["message"] = str(e)
+        #     data["meta"]["status_code"] = 500
         return jsonify(**data)
