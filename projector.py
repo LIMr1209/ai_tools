@@ -148,7 +148,33 @@ def run_projection(base64_data_1, base64_data_2):
         image_base64_2 = img_to_base64(img_2)
         result.append(image_base64_1)
         result.append(image_base64_2)
+    return result
 
+def run_projection_test(path):
+    np.random.seed(10)
+    torch.manual_seed(10)
+
+    device = torch.device('cuda')
+    with dnnlib.util.open_url(current_app.config['STYLEGAN_PATH']) as fp:
+        G = legacy.load_network_pkl(fp)['G_ema'].requires_grad_(False).to(device)  # type: ignore
+    target_pil = Image.open(path).convert('RGB')
+    w, h = target_pil.size
+    s = min(w, h)
+    target_pil = target_pil.crop(((w - s) // 2, (h - s) // 2, (w + s) // 2, (h + s) // 2))
+    target_pil = target_pil.resize((G.img_resolution, G.img_resolution), Image.LANCZOS)
+    target_uint8 = np.array(target_pil, dtype=np.uint8)
+
+    projected_w_steps, losses = project(
+        G,
+        target=torch.tensor(target_uint8.transpose([2, 0, 1]), device=device),  # pylint: disable=not-callable
+        device=device,
+    )
+    losses.sort(key=lambda i: i['loss'])
+    index_a, index_b = losses[-10]['step'], losses[-50]['step']
+    img_1 = get_img(projected_w_steps, index_a, G)
+    img_2 = get_img(projected_w_steps, index_b, G)
+    img_1.save('test_1.jpg')
+    img_2.save('test_2.jpg')
 
 def get_img(projected_w_steps, index, G):
     projected_w = projected_w_steps[index]
