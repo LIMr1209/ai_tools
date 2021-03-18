@@ -171,11 +171,27 @@ class FuseDivergenceTest(MethodView):
             data["meta"]["message"] = "图片参数错误"
             data["meta"]["status_code"] = 400
             return data
-        # try:
-        from app.lib.stylegan_pytorch.projector import run_projection
-        image_base64_1, image_base64_2, image_base64_3, image_base64_4 = run_projection(img_1,img_2,type)
-        data["data"] = [image_base64_1,image_base64_2,image_base64_3,image_base64_4]
-        # except Exception as e:
-        #     data["meta"]["message"] = str(e)
-        #     data["meta"]["status_code"] = 500
+        if type == 2:
+            try:
+                from app.lib.stylegan_pytorch.projector import run_projection
+                image_base64_1, image_base64_2, image_base64_3, image_base64_4 = run_projection(img_1,img_2,type)
+                data["data"] = [image_base64_1,image_base64_2,image_base64_3,image_base64_4]
+            except Exception as e:
+                data["meta"]["message"] = str(e)
+                data["meta"]["status_code"] = 500
+        else:
+            file_name1 = request.values.get('file_name1', '')
+            file_name2 = request.values.get('file_name2', '')
+            data["data"] = []
+            if not file_name1 or not file_name2:
+                return jsonify(**data)
+            if not file_name1.endswith('_origin.jpg') or not file_name2.endswith('_origin.jpg'):
+                return jsonify(**data)
+            try:
+                group = file_name1.split('_')[0]
+            except:
+                return jsonify(**data)
+            for i in range(1, 5):
+                img = pil_to_base64('static/image/{}_{}_result.jpg'.format(group, i))
+                data["data"].append(img)
         return jsonify(**data)
