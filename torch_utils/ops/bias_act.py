@@ -40,7 +40,8 @@ _null_tensor = torch.empty([0])
 
 def _init():
     global _inited, _plugin
-    if not _inited:
+    if _inited:
+    # if not _inited:
         _inited = True
         sources = ['bias_act.cpp', 'bias_act.cu']
         sources = [os.path.join(os.path.dirname(__file__), s) for s in sources]
