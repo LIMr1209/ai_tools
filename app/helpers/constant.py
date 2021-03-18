@@ -23,6 +23,18 @@ def draw_generate_category(id=0):
                 return i
     return groups
 
+# 融合发散
+def fuse_divergence_category(id=0):
+    groups = [
+        {"id": 1, "name": "箱包"},
+        {"id": 2, "name": "杯子"},
+    ]
+    if id:
+        for i in groups:
+            if i["id"] == id:
+                return i
+    return groups
+
 # 图片识别标签
 def get_tag():
     return [

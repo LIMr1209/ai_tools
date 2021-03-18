@@ -1,5 +1,6 @@
 import base64
 import copy
+import os
 from io import BytesIO
 
 import numpy as np
@@ -11,6 +12,7 @@ from flask import current_app
 import dnnlib
 import legacy
 from app.helpers.common import img_to_base64
+from app.helpers.constant import fuse_divergence_category
 
 
 def project(
@@ -116,12 +118,13 @@ def project(
     return w_out.repeat([1, G.mapping.num_ws, 1]), losses
 
 
-def run_projection(base64_data_1, base64_data_2):
-    np.random.seed(10)
-    torch.manual_seed(10)
+def run_projection(base64_data_1, base64_data_2, type):
+    # np.random.seed(10)
+    # torch.manual_seed(10)
 
     device = torch.device('cuda')
-    with dnnlib.util.open_url(current_app.config['STYLEGAN_PATH']) as fp:
+    path = fuse_divergence_category(type)['name']
+    with dnnlib.util.open_url(os.path.join(current_app.config["MODEL_PATH"],'stylegan', path,'network-snapshot-000160.pkl')) as fp:
         G = legacy.load_network_pkl(fp)['G_ema'].requires_grad_(False).to(device)  # type: ignore
     images = [base64_data_1, base64_data_2]
     result = []

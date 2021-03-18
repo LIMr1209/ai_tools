@@ -150,13 +150,6 @@ class FuseDivergence(MethodView):
             data["meta"]["message"] = "图片参数错误"
             data["meta"]["status_code"] = 400
             return data
-        # try:
-        from projector import run_projection
-        image_base64_1, image_base64_2, image_base64_3, image_base64_4 = run_projection(img_1,img_2)
-        data["data"] = [image_base64_1,image_base64_2,image_base64_3,image_base64_4]
-        # except Exception as e:
-        #     data["meta"]["message"] = str(e)
-        #     data["meta"]["status_code"] = 500
         return jsonify(**data)
 
 
@@ -169,7 +162,6 @@ class FuseDivergenceTest(MethodView):
     def post(self):
         data = copy.deepcopy(dataInit)
         type = force_int(request.values.get("type", 1))
-        index = force_int(request.values.get('index', 0))
         img_1 = request.values.get('image_1_base64', '')
         img_2 = request.values.get('image_2_base64', '')
         img_1 = img_1.replace("data:image/jpeg;base64,", "").replace("data:image/png;base64,", "")
@@ -180,8 +172,8 @@ class FuseDivergenceTest(MethodView):
             data["meta"]["status_code"] = 400
             return data
         # try:
-        from projector import run_projection
-        image_base64_1, image_base64_2, image_base64_3, image_base64_4 = run_projection(img_1,img_2)
+        from app.lib.stylegan_pytorch.projector import run_projection
+        image_base64_1, image_base64_2, image_base64_3, image_base64_4 = run_projection(img_1,img_2,type)
         data["data"] = [image_base64_1,image_base64_2,image_base64_3,image_base64_4]
         # except Exception as e:
         #     data["meta"]["message"] = str(e)
