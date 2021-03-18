@@ -19,7 +19,7 @@ def project(
         G,
         target: torch.Tensor,  # [C,H,W] and dynamic range [0,255], W & H must match G output resolution
         *,
-        num_steps=10,
+        num_steps=30,
         w_avg_samples=10000,
         initial_learning_rate=0.1,
         initial_noise_factor=0.05,
