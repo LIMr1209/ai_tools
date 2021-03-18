@@ -17,7 +17,7 @@ def project(
         G,
         target: torch.Tensor,  # [C,H,W] and dynamic range [0,255], W & H must match G output resolution
         *,
-        num_steps=500,
+        num_steps=10,
         w_avg_samples=10000,
         initial_learning_rate=0.1,
         initial_noise_factor=0.05,
@@ -141,7 +141,7 @@ def run_projection(base64_data_1, base64_data_2):
             device=device,
         )
         losses.sort(key=lambda i: i['loss'])
-        index_a, index_b = losses[-10]['step'], losses[-50]['step']
+        index_a, index_b = losses[-1]['step'], losses[-3]['step']
         img_1 = get_img(projected_w_steps, index_a, G)
         img_2 = get_img(projected_w_steps, index_b, G)
         image_base64_1 = img_to_base64(img_1)

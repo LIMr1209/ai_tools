@@ -118,7 +118,7 @@ class DrawGenerate(MethodView):
 
 
 # 图片融合发散
-@api.expose("/fuse/divergence")
+@api.expose("/fuse/divergence/test")
 class FuseDivergence(MethodView):
     methods = ["POST"]
 
@@ -160,7 +160,7 @@ class FuseDivergence(MethodView):
         return jsonify(**data)
 
 
-@api.expose("/fuse/divergence/test")
+@api.expose("/fuse/divergence")
 class FuseDivergenceTest(MethodView):
     methods = ["POST"]
 
