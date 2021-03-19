@@ -122,7 +122,7 @@ def crop_and_normalize_1(pil_img, offset=20):
     w,h = pil_img.size
     for x in range(0, w):
         for y in range(0, h):
-            a, b, c, d = pil_img.getpixel((x, y))
+            a, b, c = pil_img.getpixel((x, y))
             if a < 10 or b<10 or c <10:
                 if x - offset < 0:
                     left = x
@@ -134,7 +134,7 @@ def crop_and_normalize_1(pil_img, offset=20):
         break
     for y in range(0, h):
         for x in range(0, w):
-            a, b, c, d = pil_img.getpixel((x, y))
+            a, b, c = pil_img.getpixel((x, y))
             if a < 10 or b<10 or c <10:
                 if y - offset < 0:
                     up = y
@@ -146,7 +146,7 @@ def crop_and_normalize_1(pil_img, offset=20):
         break
     for x in range(w-1, 0,-1):
         for y in range(h-1,0,-1):
-            a, b, c, d = pil_img.getpixel((x, y))
+            a, b, c = pil_img.getpixel((x, y))
             if a < 10 or b<10 or c <10:
                 if x + offset > w:
                     right = x
@@ -158,7 +158,7 @@ def crop_and_normalize_1(pil_img, offset=20):
         break
     for y in range(h - 1, 0, -1):
         for x in range(w - 1, 0, -1):
-            a, b, c,d  = pil_img.getpixel((x, y))
+            a, b, c  = pil_img.getpixel((x, y))
             if a < 10 or b<10 or c <10:
                 if y + offset > h:
                     down = y
