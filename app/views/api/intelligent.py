@@ -118,43 +118,8 @@ class DrawGenerate(MethodView):
 
 
 # 图片融合发散
-@api.expose("/fuse/divergence/test")
-class FuseDivergence(MethodView):
-    methods = ["POST"]
-
-    # decorators = [user_required]
-
-    def post(self):
-        data = copy.deepcopy(dataInit)
-        type = force_int(request.values.get("type", 1))
-        index = force_int(request.values.get('index', 0))
-        img_1 = request.values.get('image_1_base64', '')
-        img_2 = request.values.get('image_2_base64', '')
-        img_1 = img_1.replace("data:image/jpeg;base64,", "").replace("data:image/png;base64,", "")
-        img_2 = img_2.replace("data:image/jpeg;base64,", "").replace("data:image/png;base64,", "")
-        file_name1 = request.values.get('file_name1', '')
-        file_name2 = request.values.get('file_name2', '')
-        data["data"] = []
-        if not file_name1 or not file_name2:
-            return jsonify(**data)
-        if not file_name1.endswith('_origin.jpg') or not file_name2.endswith('_origin.jpg'):
-            return jsonify(**data)
-        try:
-            group = file_name1.split('_')[0]
-        except:
-            return jsonify(**data)
-        for i in range(1, 5):
-            img = pil_to_base64('static/image/{}_{}_result.jpg'.format(group, i))
-            data["data"].append(img)
-        if not img_1 and not img_2:
-            data["meta"]["message"] = "图片参数错误"
-            data["meta"]["status_code"] = 400
-            return data
-        return jsonify(**data)
-
-
 @api.expose("/fuse/divergence")
-class FuseDivergenceTest(MethodView):
+class FuseDivergence(MethodView):
     methods = ["POST"]
 
     # decorators = [user_required]
@@ -182,7 +147,8 @@ class FuseDivergenceTest(MethodView):
                     data["meta"]["message"] = str(e)
                     data["meta"]["status_code"] = 500
         else:
-            group = file_name1.split('_')[0]
+            type = file_name1.split('_')[0]
+            group = file_name1.split('_')[1]
             try:
                 for i in range(1, 5):
                     img = pil_to_base64('static/image/result/{}/{}_{}_result.jpg'.format(type, group, i))
