@@ -2,7 +2,7 @@ import random
 
 from flask import current_app
 import cv2
-import dnnlib.tflib as tflib
+import dnnlib_te.tflib as tflib
 from app.helpers.color_cluster_1126 import majoColor_inrange
 from app.helpers.common import img_to_base64
 from dnnlib import EasyDict
