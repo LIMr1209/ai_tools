@@ -117,10 +117,7 @@ def project(
 
     return w_out.repeat([1, G.mapping.num_ws, 1]), losses
 
-
 def run_projection(base64_data_1, base64_data_2, type):
-    # np.random.seed(10)
-    # torch.manual_seed(10)
 
     device = torch.device('cuda')
     path = fuse_divergence_category(type)['name']
@@ -154,8 +151,6 @@ def run_projection(base64_data_1, base64_data_2, type):
     return result
 
 def run_projection_test(path):
-    np.random.seed(10)
-    torch.manual_seed(10)
 
     device = torch.device('cuda')
     with dnnlib.util.open_url(current_app.config['STYLEGAN_PATH']) as fp:
