@@ -9,7 +9,7 @@ import torch.nn.functional as F
 from PIL import Image
 from flask import current_app
 
-import dnnlib
+import dnnlib_pytorch as dnnlib
 from app.lib.stylegan_pytorch import legacy
 from app.helpers.common import img_to_base64
 from app.helpers.constant import fuse_divergence_category
