@@ -28,35 +28,3 @@ class StyleganTeLatent(MethodView):
         data["data"] = img_data_list
         return jsonify(**data)
 
-
-# pytorch stylegan 生成
-@api.expose("/stylegan/generate", methods=["POST"])
-class StyleganGenerate(MethodView):
-
-    def post(self):
-        data = copy.deepcopy(dataInit)
-        seed = request.values.get('seed', 0)
-        img_data, seed = py_sample('g', seed)
-        data["data"] = {
-            'img': img_data,
-            'seed': seed,
-        }
-        return jsonify(**data)
-
-
-# pytorch stylegan 变化
-@api.expose("/stylegan/latent", methods=["POST"])
-class StyleganLatent(MethodView):
-
-    def post(self):
-        data = copy.deepcopy(dataInit)
-        i = force_int(request.values.get("i", 0))
-        d = force_int(request.values.get('d', 0))
-        seed = force_int(request.values.get("seed", 0))
-
-        img_data, seed = py_sample("l", seed, i=i, d=d)
-        data["data"] = {
-            'img': img_data,
-            'seed': seed,
-        }
-        return jsonify(**data)

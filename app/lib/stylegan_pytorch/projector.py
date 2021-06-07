@@ -118,8 +118,10 @@ def project(
     return w_out.repeat([1, G.mapping.num_ws, 1]), losses
 
 def run_projection(base64_data_1, base64_data_2, type):
-
-    device = torch.device('cuda')
+    if current_app.config['TORCH_GPU']:
+        device = torch.device('cuda')
+    else:
+        device = torch.device('cpu')
     path = fuse_divergence_category(type)['name']
     with dnnlib.util.open_url(os.path.join(current_app.config["MODEL_PATH"],'stylegan', path,'network-snapshot-000160.pkl')) as fp:
         G = legacy.load_network_pkl(fp)['G_ema'].requires_grad_(False).to(device)  # type: ignore
