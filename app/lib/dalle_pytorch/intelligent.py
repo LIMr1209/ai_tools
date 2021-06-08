@@ -65,9 +65,11 @@ def intelligent(params, type):
     dalle.load_state_dict(weights)
     text = tokenizer.tokenize(text_o, dalle.text_seq_len)
     output = dalle.generate_images(text, filter_thres=0.9)
-    image = make_grid(output.cpu()).numpy()
+    # image = make_grid(output.cpu()).numpy()
     save_image(output, 'path_to_sample.jpg', normalize=True)
-    image.transpose(1, 2, 0)
-    img_new = Image.fromarray(image)
-    base64_str_data = img_to_base64(img_new)
+    grid = make_grid(output, nrow=8, padding=2, pad_value=0,
+                     normalize=True, range=None, scale_each=False)
+    ndarr = grid.mul(255).add_(0.5).clamp_(0, 255).permute(1, 2, 0).to('cpu', torch.uint8).numpy()
+    im = Image.fromarray(ndarr)
+    base64_str_data = img_to_base64(im)
     return base64_str_data
