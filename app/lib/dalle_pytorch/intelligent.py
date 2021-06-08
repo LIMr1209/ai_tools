@@ -52,11 +52,11 @@ def intelligent(params, type):
     loaded_obj = torch.load(str(dalle_path), map_location=torch.device('cpu'))
     dalle_params, vae_params, weights = loaded_obj['hparams'], loaded_obj['vae_params'], loaded_obj['weights']
     vae = VQGanVAE1024()  # DiscreteVAE(**vae_params)
-    dalle_params = dict(
-        #         vae = vae,
-        **dalle_params
-    )
-    vae = VQGanVAE1024()  # OpenAIDiscreteVAE()
+    # dalle_params = dict(
+    #     #         vae = vae,
+    #     **dalle_params
+    # )
+    # vae = VQGanVAE1024()  # OpenAIDiscreteVAE()
     dalle = DALLE(vae=vae, **dalle_params)
     dalle.load_state_dict(weights)
     text = tokenizer.tokenize(text_o, dalle.text_seq_len)
