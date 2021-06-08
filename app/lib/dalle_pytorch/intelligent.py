@@ -1,5 +1,7 @@
 import base64
 from pathlib import Path
+
+import cv2
 import torch
 from torchvision.utils import make_grid
 from dalle_pytorch import OpenAIDiscreteVAE, DiscreteVAE, DALLE, VQGanVAE1024
@@ -62,5 +64,8 @@ def intelligent(params, type):
     text = tokenizer.tokenize(text_o, dalle.text_seq_len)
     output = dalle.generate_images(text, filter_thres=0.9)
     image = make_grid(output.cpu()).numpy()
-    image_base64 = "data:image/jpg;base64,"+base64.b64encode(image)
+    retval, buffer = cv2.imencode('.jpg', image)
+    pic_str = base64.b64encode(buffer)
+    pic_str = pic_str.decode()
+    image_base64 = "data:image/jpg;base64,"+pic_str
     return image_base64
