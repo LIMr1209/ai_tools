@@ -3,12 +3,14 @@ from pathlib import Path
 
 import cv2
 import torch
+from PIL import Image
 from torchvision.utils import make_grid
 from dalle_pytorch import OpenAIDiscreteVAE, DiscreteVAE, DALLE, VQGanVAE1024
 from dalle_pytorch.tokenizer import tokenizer
 from flask import current_app
 
 from app.helpers.common import img_to_base64
+from app.lib.cyclegan import tensor2im
 
 
 def generate_text(params):
@@ -63,9 +65,13 @@ def intelligent(params, type):
     dalle.load_state_dict(weights)
     text = tokenizer.tokenize(text_o, dalle.text_seq_len)
     output = dalle.generate_images(text, filter_thres=0.9)
-    image = make_grid(output.cpu()).numpy()
-    retval, buffer = cv2.imencode('.jpg', image)
-    pic_str = base64.b64encode(buffer)
-    pic_str = pic_str.decode()
-    image_base64 = "data:image/jpg;base64,"+pic_str
-    return image_base64
+    result = tensor2im(output)
+    img_new = Image.fromarray(result)
+    base64_str_data = img_to_base64(img_new)
+    return base64_str_data
+    # image = make_grid(output.cpu()).numpy()
+    # retval, buffer = cv2.imencode('.jpg', image)
+    # pic_str = base64.b64encode(buffer)
+    # pic_str = pic_str.decode()
+    # image_base64 = "data:image/jpg;base64,"+pic_str
+    # return image_base64
