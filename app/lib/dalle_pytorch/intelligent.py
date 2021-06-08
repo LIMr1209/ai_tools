@@ -65,14 +65,8 @@ def intelligent(params, type):
     dalle.load_state_dict(weights)
     text = tokenizer.tokenize(text_o, dalle.text_seq_len)
     output = dalle.generate_images(text, filter_thres=0.9)
+    image = make_grid(output.cpu()).numpy()
     save_image(output, 'path_to_sample.jpg', normalize=True)
-    result = tensor2im(output)
-    img_new = Image.fromarray(result)
+    img_new = Image.fromarray(image)
     base64_str_data = img_to_base64(img_new)
     return base64_str_data
-    # image = make_grid(output.cpu()).numpy()
-    # retval, buffer = cv2.imencode('.jpg', image)
-    # pic_str = base64.b64encode(buffer)
-    # pic_str = pic_str.decode()
-    # image_base64 = "data:image/jpg;base64,"+pic_str
-    # return image_base64
