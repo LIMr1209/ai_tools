@@ -67,6 +67,7 @@ def intelligent(params, type):
     output = dalle.generate_images(text, filter_thres=0.9)
     image = make_grid(output.cpu()).numpy()
     save_image(output, 'path_to_sample.jpg', normalize=True)
+    image.transpose(1, 2, 0)
     img_new = Image.fromarray(image)
     base64_str_data = img_to_base64(img_new)
     return base64_str_data
