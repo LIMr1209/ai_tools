@@ -4,7 +4,7 @@ from pathlib import Path
 import cv2
 import torch
 from PIL import Image
-from torchvision.utils import make_grid
+from torchvision.utils import make_grid, save_image
 from dalle_pytorch import OpenAIDiscreteVAE, DiscreteVAE, DALLE, VQGanVAE1024
 from dalle_pytorch.tokenizer import tokenizer
 from flask import current_app
@@ -55,16 +55,17 @@ def intelligent(params, type):
     dalle_path = Path(DALLE_PATH)
     loaded_obj = torch.load(str(dalle_path), map_location=torch.device('cpu'))
     dalle_params, vae_params, weights = loaded_obj['hparams'], loaded_obj['vae_params'], loaded_obj['weights']
-    vae = VQGanVAE1024()  # DiscreteVAE(**vae_params)
-    # dalle_params = dict(
-    #     #         vae = vae,
-    #     **dalle_params
-    # )
-    # vae = VQGanVAE1024()  # OpenAIDiscreteVAE()
+    # vae = VQGanVAE1024()  # DiscreteVAE(**vae_params)
+    dalle_params = dict(
+        #         vae = vae,
+        **dalle_params
+    )
+    vae = VQGanVAE1024()  # OpenAIDiscreteVAE()
     dalle = DALLE(vae=vae, **dalle_params)
     dalle.load_state_dict(weights)
     text = tokenizer.tokenize(text_o, dalle.text_seq_len)
     output = dalle.generate_images(text, filter_thres=0.9)
+    save_image(output, 'path_to_sample.jpg', normalize=True)
     result = tensor2im(output)
     img_new = Image.fromarray(result)
     base64_str_data = img_to_base64(img_new)
