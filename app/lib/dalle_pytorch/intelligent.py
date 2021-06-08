@@ -24,29 +24,23 @@ def generate_text(params):
     zl_zh = ['万向轮', '单向轮']
     y_zh = ['托运箱', '登机箱']
     fz_zh = ['商务', '儿童', '休闲', '运动', '复古']
-    tags = ['tag-c', 'tag-m', 'tag-f', 'tag-y', 'tag-zl', 'tag-lg', 'tag-fz']
-    row = ['', ]
-    for i in tags:
-        if i in params:
-            value = params[i]
-            if i == 'tag-c':
-                row.append(c[c_zh.index(value)])
-            elif i == 'tag-m':
-                row.append(m[m_zh.index(value)])
-            elif i == 'tag-f':
-                row.append(f[f_zh.index(value)])
-            elif i == 'tag-y':
-                row.append(y[y_zh.index(value)])
-            elif i == 'tag-zl':
-                row.append(zl[zl_zh.index(value)])
-            elif i == 'tag-lg':
-                row.append(lg[lg_zh.index(value)])
-            elif i == 'tag-fz':
-                row.append(fz[fz_zh.index(value)])
-        else:
-            row.append('')
-
-    text = f"A {c[int(row[2]) - 1]} {f[int(row[4]) - 1]} {m[int(row[3]) - 1]} shell {lg[int(row[5]) - 1]}-rod {y[int(row[7]) - 1]} suitcase in {fz[int(row[8]) - 1]} style with {zl[int(row[6]) - 1]}."
+    # tags = ['tag-c', 'tag-m', 'tag-f', 'tag-y', 'tag-zl', 'tag-lg', 'tag-fz']
+    text = 'a'
+    if 'tag-c' in params and params['tag-c']:
+        text += c[c_zh.index(params['tag-c'])] + ' '
+    if 'tag-f' in params and params['tag-f']:
+        text += f[f_zh.index(params['tag-f'])] + ' '
+    if 'tag-m' in params and params['tag-m']:
+        text += m[m_zh.index(params['tag-m'])] + ' '
+    text += 'shell'
+    if 'tag-lg' in params and params['tag-lg']:
+        text += lg[lg_zh.index(params['tag-lg'])] + '-rod'
+    if 'tag-y' in params and params['tag-y']:
+        text += y[y_zh.index(params['tag-y'])] + ' suitcase in '
+    if 'tag-fz' in params and params['tag-fz']:
+        text += fz[fz_zh.index(params['tag-fz'])] + ' style with '
+    if 'tag-zl' in params and params['tag-zl']:
+        text += zl[zl_zh.index(params['tag-zl'])] + '.'
     return text
 
 
