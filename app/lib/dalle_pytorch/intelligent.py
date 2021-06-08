@@ -46,7 +46,7 @@ def generate_text(params):
 
 def intelligent(params, type):
     text_o = generate_text(params)
-    DALLE_PATH = current_app.config['']
+    DALLE_PATH = './dalle_10.pt'
     dalle_path = Path(DALLE_PATH)
     loaded_obj = torch.load(str(dalle_path), map_location=torch.device('cpu'))
     dalle_params, vae_params, weights = loaded_obj['hparams'], loaded_obj['vae_params'], loaded_obj['weights']
