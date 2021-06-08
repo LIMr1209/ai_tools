@@ -34,6 +34,6 @@ restart)
         echo "restart uwsgi [OK]"
 ;;
 *)
-    echo "Usages: sh uwsgiserver.sh [start|stop|restart]"
+    echo "Usages: sh deploy.sh [start|stop|restart]"
 ;;
 esac

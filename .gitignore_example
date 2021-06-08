@@ -8,3 +8,4 @@ uwsgi.ini
 deploy.sh
 *.pyc
 uwsgi_ai_tools.pid
+taming/
