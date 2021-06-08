@@ -25,22 +25,22 @@ def generate_text(params):
     y_zh = ['托运箱', '登机箱']
     fz_zh = ['商务', '儿童', '休闲', '运动', '复古']
     # tags = ['tag-c', 'tag-m', 'tag-f', 'tag-y', 'tag-zl', 'tag-lg', 'tag-fz']
-    text = 'a'
+    text = 'a '
     if 'tag-c' in params and params['tag-c']:
         text += c[c_zh.index(params['tag-c'])] + ' '
     if 'tag-f' in params and params['tag-f']:
         text += f[f_zh.index(params['tag-f'])] + ' '
     if 'tag-m' in params and params['tag-m']:
         text += m[m_zh.index(params['tag-m'])] + ' '
-    text += 'shell'
+    text += 'shell '
     if 'tag-lg' in params and params['tag-lg']:
-        text += lg[lg_zh.index(params['tag-lg'])] + '-rod'
+        text += lg[lg_zh.index(params['tag-lg'])] + '-rod '
     if 'tag-y' in params and params['tag-y']:
         text += y[y_zh.index(params['tag-y'])] + ' suitcase in '
     if 'tag-fz' in params and params['tag-fz']:
-        text += fz[fz_zh.index(params['tag-fz'])] + ' style with '
+        text += fz[fz_zh.index(params['tag-fz'])] + ' style'
     if 'tag-zl' in params and params['tag-zl']:
-        text += zl[zl_zh.index(params['tag-zl'])] + '.'
+        text += 'with '+zl[zl_zh.index(params['tag-zl'])] + '.'
     return text
 
 
