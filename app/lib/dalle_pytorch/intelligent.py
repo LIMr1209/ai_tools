@@ -1,16 +1,12 @@
-import base64
 from pathlib import Path
 
-import cv2
 import torch
 from PIL import Image
-from torchvision.utils import make_grid, save_image
+from torchvision.utils import make_grid
 from dalle_pytorch import OpenAIDiscreteVAE, DiscreteVAE, DALLE, VQGanVAE1024
 from dalle_pytorch.tokenizer import tokenizer
-from flask import current_app
 
 from app.helpers.common import img_to_base64
-from app.lib.cyclegan import tensor2im
 
 
 def generate_text(params):
@@ -52,7 +48,7 @@ def generate_text(params):
 def intelligent(params, type):
     text_o = generate_text(params)
     print(text_o)
-    DALLE_PATH = './dalle_10.pt'
+    DALLE_PATH = './dalle_10_512.pt'
     dalle_path = Path(DALLE_PATH)
     loaded_obj = torch.load(str(dalle_path), map_location=torch.device('cpu'))
     dalle_params, vae_params, weights = loaded_obj['hparams'], loaded_obj['vae_params'], loaded_obj['weights']
