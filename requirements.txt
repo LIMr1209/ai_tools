@@ -10,4 +10,5 @@ gevent-websocket==0.10.1
 requests
 efficientnet_pytorch
 scikit-image==0.17.2
+efficientnet_pytorch==0.6.3
 uWSGI==2.0.18
