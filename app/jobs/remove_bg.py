@@ -12,7 +12,7 @@ def remove(catalog):
         else:
             print('正在处理')
             image = Image.open(path).convert("RGB")
-            model = current_app.config["U2NET_MODEL"]
+            model = detect.load_model(model_name='u2net')
             roi = detect.predict(model, np.array(image))
             roi = roi.resize((image.size), resample=Image.LANCZOS)
 

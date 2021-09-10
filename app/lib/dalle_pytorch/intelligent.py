@@ -3,7 +3,8 @@ from pathlib import Path
 import torch
 from PIL import Image
 from torchvision.utils import make_grid
-from dalle_pytorch import OpenAIDiscreteVAE, DiscreteVAE, DALLE, VQGanVAE1024
+#from dalle_pytorch import OpenAIDiscreteVAE, DiscreteVAE, DALLE, VQGanVAE1024
+from dalle_pytorch import OpenAIDiscreteVAE, DiscreteVAE, DALLE
 from dalle_pytorch.tokenizer import tokenizer
 
 from app.helpers.common import img_to_base64
@@ -57,7 +58,8 @@ def intelligent(params, type):
         #         vae = vae,
         **dalle_params
     )
-    vae = VQGanVAE1024()  # OpenAIDiscreteVAE()
+    #vae = VQGanVAE1024()  # OpenAIDiscreteVAE()
+    vae = DiscreteVAE()
     dalle = DALLE(vae=vae, **dalle_params)
     dalle.load_state_dict(weights)
     text = tokenizer.tokenize(text_o, dalle.text_seq_len)
