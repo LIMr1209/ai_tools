@@ -2,4 +2,4 @@
 from app.helpers.interceptor import SeniorBlueprint
 
 api = SeniorBlueprint("api", __name__, url_prefix="/api")
-from . import intelligent, remove_bg, cmf, scene_render
+from . import intelligent, remove_bg, cmf, scene_render, test
