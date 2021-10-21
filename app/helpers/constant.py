@@ -35,6 +35,26 @@ def fuse_divergence_category(id=0):
                 return i
     return groups
 
+# 风格迁移-风格图
+def style_image_options(id=0):
+    data = [
+        {"id": 1, "name": "草原", "cover_url": 'https://s3.taihuoniao.com/image/style_transfer/style_img/cy.jpeg', 'origin_url': ''},
+        {"id": 2, "name": "城市", "cover_url": 'https://s3.taihuoniao.com/image/style_transfer/style_img/cs.jpeg', 'origin_url': ''},
+        {"id": 3, "name": "大海", "cover_url": 'https://s3.taihuoniao.com/image/style_transfer/style_img/dh.jpeg', 'origin_url': ''},
+        {"id": 4, "name": "森林", "cover_url": 'https://s3.taihuoniao.com/image/style_transfer/style_img/sl.jpeg', 'origin_url': ''},
+        {"id": 5, "name": "天空", "cover_url": 'https://s3.taihuoniao.com/image/style_transfer/style_img/tk.jpeg', 'origin_url': ''},
+        {"id": 6, "name": "田野", "cover_url": 'https://s3.taihuoniao.com/image/style_transfer/style_img/ty.jpeg', 'origin_url': ''},
+        {"id": 7, "name": "夜景", "cover_url": 'https://s3.taihuoniao.com/image/style_transfer/style_img/yj.jpeg', 'origin_url': ''},
+        {"id": 8, "name": "山水画", "cover_url": 'https://s3.taihuoniao.com/image/style_transfer/style_img/ssh.jpeg', 'origin_url': ''},
+    ]
+
+    if id:
+        for d in data:
+            if d["id"] == id:
+                return d
+    else:
+        return data
+
 # 图片识别标签
 def get_tag():
     return [

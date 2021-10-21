@@ -156,8 +156,13 @@ class RecoloringDecoder(nn.Module):
 
 # get the color from style images
 def get_dominant_colors(infile):
-    image = Image.open(infile)
-    small_image = image.resize((80, 80))
+    try:
+        image = Image.open(infile)
+        small_image = image.resize((80, 80))
+    except Exception as e:
+        print(str(e))
+        return ''
+
     result = small_image.convert(
         "P", palette=Image.ADAPTIVE, colors=10
     )  # image with only 10 dominating colors

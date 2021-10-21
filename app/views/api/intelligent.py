@@ -4,7 +4,8 @@ from app.helpers.common import force_int
 import copy
 from flask.views import MethodView
 from app.helpers.common import pil_to_base64
-from app.helpers.constant import intelligent_category, draw_generate_category
+from app.helpers.constant import intelligent_category, draw_generate_category, style_image_options
+from app.jobs.palette import gen_style_img
 
 dataInit = {"data": [], "meta": {"message": "", "status_code": 200, }}
 
@@ -156,3 +157,58 @@ class FuseDivergence(MethodView):
             except:
                 data["data"] = []
         return jsonify(**data)
+
+
+
+# 风格迁移-风格列表
+@api.route('/ai_design/style_transfer/style_image_list', methods=['GET'])
+def style_transfer_img_list():
+    query = {}
+    meta = {}
+    page = force_int(request.values.get("page", 1))
+    per_page = force_int(request.values.get("per_page", 10))
+
+    data = style_image_options()
+    for d in data:
+        pass
+
+    meta["rows"] = data
+    meta["total_count"] = len(data)
+    meta["page"] = page
+    meta["per_page"] = per_page
+    return jsonify(code=200, message='', data=meta)
+
+
+# 风格迁移-风格生成
+@api.route('/ai_design/style_transfer/style_gen', methods=['POST'])
+def style_transfer_gen():
+    type = force_int(request.values.get("kind", 1))
+    img_1 = request.values.get('image_1_base64', '')
+    img_2 = request.values.get('image_2_base64', '')
+    img_1 = img_1.replace("data:image/jpeg;base64,", "").replace("data:image/jpg;base64,", "").replace("data:image/png;base64,", "")
+    img_2 = img_2.replace("data:image/jpeg;base64,", "").replace("data:image/jpg;base64,", "").replace("data:image/png;base64,", "")
+    img2_id = force_int(request.values.get("img2_id", 0))
+
+    if not img_1:
+        return jsonify(code=400, message='请上传产品图片')
+
+    if not img_2 and not img2_id:
+        return jsonify(code=400, message='请上传或选择风格图片')
+
+    data = {'rows': []}
+    params = {}
+    params['img1_base64'] = img_1
+    if img_2:
+        params['img2_base64'] = img_2
+    elif img2_id:
+        img2_url = style_image_options(id=img2_id)['cover_url'] 
+        params['img2_url'] = img2_url
+    try:
+        result = gen_style_img(**params)
+        if not result['success']:
+            return jsonify(code=500, message=result['message'])
+            
+        data['rows'].append({'base64': result['data']})
+        return jsonify(code=200, message='', data=data)
+    except Exception as e:
+        return jsonify(code=500, message=('生成失败: %s' % str(e)))

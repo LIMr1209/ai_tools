@@ -9,7 +9,6 @@ opencv-python==4.5.3.56
 pillow==7.2.0
 gevent-websocket==0.10.1
 requests
-efficientnet_pytorch
 scikit-image==0.17.2
 efficientnet_pytorch==0.6.3
 dalle-pytorch==1.0.7
