@@ -11,8 +11,8 @@ dataInit = {"data": [], "meta": {"message": "", "status_code": 200, }}
 
 
 # stylegan-ada 分类
-@api.expose("/stylegan_ada/category")
-class StyleganAdaCategory(MethodView):
+@api.expose("/stylegan/category")
+class StyleganCategory(MethodView):
     methods = ["GET"]
 
     def get(self):
@@ -21,8 +21,8 @@ class StyleganAdaCategory(MethodView):
         return jsonify(**data)
 
 # stylegan-ada 生成
-@api.expose("/stylegan_ada/generate")
-class StyleganAdaGenerate(MethodView):
+@api.expose("/stylegan/generate")
+class StyleganGenerate(MethodView):
     methods = ["POST"]
 
     # decorators = [user_required]
