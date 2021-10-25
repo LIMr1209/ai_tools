@@ -17,7 +17,7 @@ import requests
 
 # 图片上色
 def gen_style_img(**kwargs):
-    
+
     # 参数处理
     img1_binary_data = img2_binary_data = ''
     if 'img1_base64' in kwargs and kwargs['img1_base64']:
@@ -27,14 +27,14 @@ def gen_style_img(**kwargs):
     if 'img2_base64' in kwargs and kwargs['img2_base64']:
         img2_byte_data = base64.b64decode(kwargs['img2_base64'])
         img2_binary_data = io.BytesIO(img2_byte_data)
-        
+
     elif 'img2_url' in kwargs and kwargs['img2_url']:
         img2_response = requests.get(kwargs['img2_url'])
         img2_binary_data = io.BytesIO(img2_response.content)
 
     if not img1_binary_data or not img2_binary_data:
         return {'success': False, 'message': '缺少必要参数！'}
-    
+
 
     FE = FeatureEncoder()
     RD = RecoloringDecoder()
@@ -64,12 +64,12 @@ def gen_style_img(**kwargs):
         c1,c2,c3,c4 = FE(img)
 
     palette = get_dominant_colors(img2_binary_data)[:6]
-    
+
     pal_np = np.array(palette).reshape(1,6,3)/255
 
     pal = torch.Tensor((convertor.rgb2lab(pal_np) - [50,0,0] ) / [50,128,128]).unsqueeze(0)
 
-    plt.imshow(convertor.lab2rgb((pal[0].numpy() + [1,0,0]) * [50,128,128]));plt.axis(False)
+    # plt.imshow(convertor.lab2rgb((pal[0].numpy() + [1,0,0]) * [50,128,128]));plt.axis(False)
     #plt.show()
 
     palette = pal
@@ -78,8 +78,8 @@ def gen_style_img(**kwargs):
         out = RD(c1, c2, c3, c4, palette, illu)
 
         final_image = torch.cat([(illu+1)*50, out*128],axis = 1).permute(0,2,3,1)[0]
-    _, ax= plt.subplots(1,3,squeeze=True,facecolor='w',dpi = 250, edgecolor='k')
-    
+    # _, ax= plt.subplots(1,3,squeeze=True,facecolor='w',dpi = 250, edgecolor='k')
+
 
     #ax[0].imshow(convertor.lab2rgb((pal[0].numpy() + [1,0,0]) * [50,128,128]));ax[0].axis(False);ax[0].set_title("Input palette")
 
@@ -88,7 +88,7 @@ def gen_style_img(**kwargs):
     #ax[2].imshow(convertor.lab2rgb(final_image));ax[2].axis(False);ax[2].set_title("Output image")
     #plt.show()
 
-    plt.figure(num=None, figsize=(20, 6), dpi=80, facecolor='w', edgecolor='k')
+    # plt.figure(num=None, figsize=(20, 6), dpi=80, facecolor='w', edgecolor='k')
     #plt.imshow(convertor.lab2rgb(final_image));plt.axis(False)
 
     # 写入内存
@@ -110,14 +110,14 @@ def batch_gen_style_img(catalog):
 
     # large number test:
 
-    # dir of content image 
+    # dir of content image
     filename = os.listdir(os.path.join(catalog, "main/"))
     # dir of style image
     styleFilename = os.listdir(os.path.join(catalog, "style/"))
 
     for j,i in enumerate(filename):
-        for styleFile in styleFilename: 
-            
+        for styleFile in styleFilename:
+
             img_np=sio.imread(os.path.join(catalog, "main/") + filename[j])
             print(img_np.shape[-1])
             if img_np.shape[-1] != 3:
@@ -140,7 +140,7 @@ def batch_gen_style_img(catalog):
                 c1,c2,c3,c4 = FE(img)
 
             palette = get_dominant_colors(os.path.join(catalog, "style/") + styleFile)[:6]
-            
+
             print(palette)
 
             pal_np = np.array(palette).reshape(1,6,3)/255
@@ -159,8 +159,8 @@ def batch_gen_style_img(catalog):
 
                 final_image = torch.cat([(illu+1)*50, out*128],axis = 1).permute(0,2,3,1)[0]
             _, ax= plt.subplots(1,3,squeeze=True,facecolor='w',dpi = 250, edgecolor='k')
-            
-            
+
+
 #           ax[0].imshow(convertor.lab2rgb((pal[0].numpy() + [1,0,0]) * [50,128,128]));ax[0].axis(False);ax[0].set_title("Input palette")
 
             ax[0].imshow(image.imread(os.path.join(catalog, "style/") + styleFile));ax[0].axis(False);ax[0].set_title("Input palette")
@@ -173,7 +173,7 @@ def batch_gen_style_img(catalog):
             image.imsave(os.path.join(catalog, "output/") + filename[j].split('.')[0]+'_'+styleFile, convertor.lab2rgb(final_image))
             plt.show()
 
-            # convertor.lab2rgb(final_image) can be saved as file 
+            # convertor.lab2rgb(final_image) can be saved as file
 
 
-    
+

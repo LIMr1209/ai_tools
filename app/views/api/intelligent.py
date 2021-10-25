@@ -163,7 +163,6 @@ class FuseDivergence(MethodView):
 # 风格迁移-风格列表
 @api.route('/ai_design/style_transfer/style_image_list', methods=['GET'])
 def style_transfer_img_list():
-    query = {}
     meta = {}
     page = force_int(request.values.get("page", 1))
     per_page = force_int(request.values.get("per_page", 10))
@@ -201,13 +200,13 @@ def style_transfer_gen():
     if img_2:
         params['img2_base64'] = img_2
     elif img2_id:
-        img2_url = style_image_options(id=img2_id)['cover_url'] 
+        img2_url = style_image_options(id=img2_id)['cover_url']
         params['img2_url'] = img2_url
     try:
         result = gen_style_img(**params)
         if not result['success']:
             return jsonify(code=500, message=result['message'])
-            
+
         data['rows'].append({'base64': result['data']})
         return jsonify(code=200, message='', data=data)
     except Exception as e:

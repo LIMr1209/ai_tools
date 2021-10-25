@@ -34,7 +34,7 @@ class APIException(HTTPException):
             self.message = message
         super(APIException, self).__init__(message, None)
 
-    def get_body(self, environ=None):
+    def get_body(self, environ=None, scope=None):
         body = dict(
             message=self.message,
             # error_code=self.error_code,
@@ -43,11 +43,11 @@ class APIException(HTTPException):
         text = json.dumps(body)
         return text
 
-    def get_headers(self, environ=None):
+    def get_headers(self, environ=None, scope=None):
         """Get a list of headers."""
         return [("Content-Type", "application/json")]
 
-    def get_response(self, environ=None):
+    def get_response(self, environ=None, scope=None):
         if self.code == 500:
             current_app.logger.warning(str(self.message))
         return super(APIException, self).get_response(environ=environ)

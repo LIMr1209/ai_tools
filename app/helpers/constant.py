@@ -16,6 +16,8 @@ def intelligent_category(id=0):
 def draw_generate_category(id=0):
     groups = [
         {"id": 1, "name": "箱包"},
+        {'id': 2, "name": '鞋子'},
+        {'id': 3, "name": '洗衣机'},
     ]
     if id:
         for i in groups:
