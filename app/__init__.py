@@ -15,8 +15,8 @@ CONFDIR = os.path.join(PROJDIR, "config")
 
 
 def create_app(config=None):
-    import torch.multiprocessing as mp
-    mp.set_start_method('spawn', force=True)
+    # import torch.multiprocessing as mp
+    # mp.set_start_method('spawn', force=True)
     app = Flask(__name__, static_url_path="/static", static_folder="../static")
 
     app.config.from_pyfile(os.path.join(CONFDIR, "app.py"))
