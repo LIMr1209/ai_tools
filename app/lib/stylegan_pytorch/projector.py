@@ -123,7 +123,7 @@ def run_projection(base64_data_1, base64_data_2, type):
     else:
         device = torch.device('cpu')
     path = fuse_divergence_category(type)['name']
-    with dnnlib.util.open_url(os.path.join(current_app.config["MODEL_PATH"],'stylegan', path,'network-snapshot-000160.pkl')) as fp:
+    with dnnlib.util.open_url(os.path.join(current_app.config["MODEL_PATH"],'stylegan', path,'network.pkl')) as fp:
         G = legacy.load_network_pkl(fp)['G_ema'].requires_grad_(False).to(device)  # type: ignore
     images = [base64_data_1, base64_data_2]
     result = []

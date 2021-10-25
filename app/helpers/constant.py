@@ -14,10 +14,10 @@ def draw_generate_category(id=0):
     return groups
 
 # 融合发散
-def stylegan_ada_category(id=0):
+def stylegan_category(id=0):
     groups = [
         {"id": 1, "name": "箱包"},
-        {"id": 2, "name": "杯子"},
+        {"id": 2, "name": "保温杯"},
         {"id": 3, "name": "鞋子"},
         {"id": 4, "name": "洗衣机"},
     ]
@@ -31,7 +31,7 @@ def stylegan_ada_category(id=0):
 def fuse_divergence_category(id=0):
     groups = [
         {"id": 1, "name": "箱包"},
-        {"id": 2, "name": "杯子"},
+        {"id": 2, "name": "保温杯"},
     ]
     if id:
         for i in groups:

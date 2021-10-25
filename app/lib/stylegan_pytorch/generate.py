@@ -7,7 +7,7 @@ import torch
 import app.lib.stylegan_pytorch.legacy as legacy
 from flask import current_app
 import random
-from app.helpers.constant import stylegan_ada_category
+from app.helpers.constant import stylegan_category
 
 from app.helpers.common import img_to_base64
 
@@ -20,7 +20,7 @@ def generate(type):
         device = torch.device('cpu')
         force_fp32 = True
     truncation_psi = 1
-    network_path = os.path.join(os.path.join(current_app.config['MODEL_PATH'], 'stylegan_ada', stylegan_ada_category(type)['name'], 'network.pkl'))
+    network_path = os.path.join(os.path.join(current_app.config['MODEL_PATH'], 'stylegan', stylegan_category(type)['name'], 'network.pkl'))
     with dnnlib.util.open_url(network_path) as f:
         G = legacy.load_network_pkl(f)['G_ema'].to(device)  # 必须保留目录结构，也就是说dnnlib_te 更换位dnnlib 才能复现加载模型
     label = torch.zeros([1, G.c_dim], device=device)

@@ -4,7 +4,7 @@ from app.helpers.common import force_int
 import copy
 from flask.views import MethodView
 from app.helpers.common import pil_to_base64
-from app.helpers.constant import draw_generate_category, style_image_options, stylegan_ada_category
+from app.helpers.constant import draw_generate_category, style_image_options, stylegan_category
 from app.jobs.palette import gen_style_img
 
 dataInit = {"data": [], "meta": {"message": "", "status_code": 200, }}
@@ -17,7 +17,7 @@ class StyleganCategory(MethodView):
 
     def get(self):
         data = copy.deepcopy(dataInit)
-        data['data'] = stylegan_ada_category()
+        data['data'] = stylegan_category()
         return jsonify(**data)
 
 # stylegan-ada 生成
@@ -30,7 +30,7 @@ class StyleganGenerate(MethodView):
     def post(self):
         data = copy.deepcopy(dataInit)
         type = force_int(request.values.get("type", 0))
-        if type not in list(map(lambda x: x["id"], stylegan_ada_category())):
+        if type not in list(map(lambda x: x["id"], stylegan_category())):
             data["meta"]["message"] = "请选择正确的设计类型"
             data["meta"]["status_code"] = 400
             return data
