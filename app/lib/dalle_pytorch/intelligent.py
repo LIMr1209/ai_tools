@@ -48,7 +48,6 @@ def generate_text(params):
 
 def intelligent(params, type):
     text_o = generate_text(params)
-    print(text_o)
     DALLE_PATH = './dalle_10_512.pt'
     dalle_path = Path(DALLE_PATH)
     loaded_obj = torch.load(str(dalle_path), map_location=torch.device('cpu'))

@@ -4,48 +4,39 @@ from app.helpers.common import force_int
 import copy
 from flask.views import MethodView
 from app.helpers.common import pil_to_base64
-from app.helpers.constant import intelligent_category, draw_generate_category, style_image_options
+from app.helpers.constant import draw_generate_category, style_image_options, stylegan_ada_category
 from app.jobs.palette import gen_style_img
 
 dataInit = {"data": [], "meta": {"message": "", "status_code": 200, }}
 
 
-@api.expose("/intelligent/category")
-class IntelligentCategory(MethodView):
+# stylegan-ada 分类
+@api.expose("/stylegan_ada/category")
+class StyleganAdaCategory(MethodView):
     methods = ["GET"]
 
     def get(self):
         data = copy.deepcopy(dataInit)
-        data['data'] = intelligent_category()
+        data['data'] = stylegan_ada_category()
         return jsonify(**data)
 
-
-@api.expose("/intelligent/handle")
-class Intelligent(MethodView):
+# stylegan-ada 生成
+@api.expose("/stylegan_ada/generate")
+class StyleganAdaGenerate(MethodView):
     methods = ["POST"]
 
     # decorators = [user_required]
 
     def post(self):
         data = copy.deepcopy(dataInit)
-        myFile = request.files.get("file", None)
-        index = force_int(request.values.get('index', 0))
         type = force_int(request.values.get("type", 0))
-        if not myFile:
-            data["meta"]["message"] = "请上传图片文件"
-            data["meta"]["status_code"] = 400
-            return data
-        if myFile.mimetype not in ["image/jpeg", "image/png", "image/jpg"]:
-            data["meta"]["message"] = "上传图片文件的格式有误"
-            data["meta"]["status_code"] = 400
-            return data
-        if type not in list(map(lambda x: x["id"], intelligent_category())):
+        if type not in list(map(lambda x: x["id"], stylegan_ada_category())):
             data["meta"]["message"] = "请选择正确的设计类型"
             data["meta"]["status_code"] = 400
             return data
-        from app.lib.cyclegan.intelligent import intelligent
+        from app.lib.stylegan_pytorch.generate import generate
 
-        res, base64_str = intelligent(image=myFile, index=index, type=type)
+        res, base64_str = generate(type=type)
         if not res:
             data["meta"]["message"] = base64_str
             data["meta"]["status_code"] = 500
@@ -53,10 +44,9 @@ class Intelligent(MethodView):
         else:
             data["data"] = {
                 'img': base64_str,
-                'index': index,
-                'all_index': [0, 1, 2, 3, 4, 5]
             }
         return jsonify(**data)
+
 
 
 # 上传 转base64

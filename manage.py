@@ -1,8 +1,8 @@
 #!env/bin/python
 from app import create_app
 from flask_script import Manager, Server, Shell
-from geventwebsocket.handler import WebSocketHandler  # 提供WS（websocket）协议处理
-from geventwebsocket.server import WSGIServer  # websocket服务承载
+# from geventwebsocket.handler import WebSocketHandler  # 提供WS（websocket）协议处理
+# from geventwebsocket.server import WSGIServer  # websocket服务承载
 
 app = create_app()
 manager = Manager(app)

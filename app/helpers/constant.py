@@ -1,10 +1,11 @@
 #  常量配置
 
-# 上传草图生成
-def intelligent_category(id=0):
+# 绘制草图生成
+def draw_generate_category(id=0):
     groups = [
-        {"id": 1, "name": "盘子"},
-        {"id": 2, "name": "杯子"},
+        {"id": 1, "name": "箱包"},
+        {'id': 2, "name": '鞋子'},
+        # {'id': 3, "name": '洗衣机'},
     ]
     if id:
         for i in groups:
@@ -12,12 +13,13 @@ def intelligent_category(id=0):
                 return i
     return groups
 
-# 绘制草图生成
-def draw_generate_category(id=0):
+# 融合发散
+def stylegan_ada_category(id=0):
     groups = [
         {"id": 1, "name": "箱包"},
-        {'id': 2, "name": '鞋子'},
-        {'id': 3, "name": '洗衣机'},
+        {"id": 2, "name": "杯子"},
+        {"id": 3, "name": "鞋子"},
+        {"id": 4, "name": "洗衣机"},
     ]
     if id:
         for i in groups:
