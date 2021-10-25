@@ -30,4 +30,4 @@ def generate(type):
     img = (img.permute(0, 2, 3, 1) * 127.5 + 128).clamp(0, 255).to(torch.uint8)
     img_new = Image.fromarray(img[0].cpu().numpy(), 'RGB')
     image_base64 = img_to_base64(img_new)
-    return image_base64
+    return True, image_base64
