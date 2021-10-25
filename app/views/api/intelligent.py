@@ -30,13 +30,14 @@ class StyleganGenerate(MethodView):
     def post(self):
         data = copy.deepcopy(dataInit)
         type = force_int(request.values.get("type", 0))
+        count = force_int(request.values.get("count", 6))
         if type not in list(map(lambda x: x["id"], stylegan_category())):
             data["meta"]["message"] = "请选择正确的设计类型"
             data["meta"]["status_code"] = 400
             return data
         from app.lib.stylegan_pytorch.generate import generate
 
-        res, base64_str = generate(type=type)
+        res, base64_str = generate(type=type, count=count)
         if not res:
             data["meta"]["message"] = base64_str
             data["meta"]["status_code"] = 500
