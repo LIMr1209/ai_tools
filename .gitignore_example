@@ -1,0 +1,9 @@
+env/
+.idea/
+.*
+__pycache__
+!.gitignore_example
+!.env_example
+*.pth
+*.pyc
+*.pyd

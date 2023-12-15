@@ -1,0 +1,13 @@
+Flask
+redis
+jieba
+bson
+pandas
+opencv-python
+pillow
+torch
+torchvision
+gevent-websocket
+requests
+efficientnet_pytorch
+scikit-image
