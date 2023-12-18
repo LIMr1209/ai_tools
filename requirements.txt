@@ -11,3 +11,6 @@ gevent-websocket
 requests
 efficientnet_pytorch
 scikit-image
+pycryptodome
+gunicorn
+cython

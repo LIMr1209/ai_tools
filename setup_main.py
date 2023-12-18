@@ -2,15 +2,15 @@ import os
 
 # 项目根目录下不用（能）转译的py文件（夹）名，用于启动的入口脚本文件一定要加进来
 ignore_files = [
-    'build', 'static', 'env', 'checkpoint', '__pycache__', '.git', 'setup.py', 'setup_main.py',
+    'build', 'venv', 'checkpoint', '__pycache__', '.git', 'setup.py', 'setup_main.py',
     'manage.py'
 ]
 # 需要移动的以点开头的文件
 need_move_dot_file = [".env", ".env_example"]
 # 项目子目录下不用（能）转译的'py文件（夹）名
-ignore_names = [""]
+ignore_names = ["venv"]
 # 不需要原样复制到编译文件夹的文件或者文件夹
-ignore_move = ['env', '__pycache__', 'setup.py', 'setup_main.py']
+ignore_move = ['venv', '__pycache__', 'setup.py', 'setup_main.py', "README.md", ".env_example"]
 # 需要编译的文件夹绝对路径
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # 将以上不需要转译的文件(夹)加上绝对路径
@@ -18,7 +18,7 @@ ignore_files = [os.path.join(BASE_DIR, x) for x in ignore_files]
 # 是否将编译打包到指定文件夹内 (True)，还是和源文件在同一目录下(False)，默认True
 package = True
 # 打包文件夹名 (package = True 时有效)
-package_name = "build_res"
+package_name = "cython_build"
 # 打包文件夹路径 (package = True 时有效)
 package_path = os.path.join(BASE_DIR, package_name)
 # 若没有打包文件夹，则生成一个

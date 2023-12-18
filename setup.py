@@ -1,5 +1,7 @@
 import sys
-from distutils.core import setup
+# from distutils.core import setup
+from setuptools import setup
+
 
 try:
     from Cython.Build import cythonize
