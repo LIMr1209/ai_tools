@@ -2,7 +2,7 @@ import os
 
 # 项目根目录下不用（能）转译的py文件（夹）名，用于启动的入口脚本文件一定要加进来
 ignore_files = [
-    'build', 'venv', 'checkpoint', '__pycache__', '.git', 'setup.py', 'setup_main.py',
+    'nuitka_build', 'venv', 'checkpoint', '__pycache__', '.git', 'setup.py', 'setup_main.py',
     'manage.py'
 ]
 # 需要移动的以点开头的文件

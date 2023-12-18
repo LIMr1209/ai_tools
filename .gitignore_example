@@ -7,3 +7,5 @@ __pycache__
 *.pth
 *.pyc
 *.pyd
+nuitka_build
+cython_build
