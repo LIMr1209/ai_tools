@@ -1,4 +1,3 @@
-# cython: language_level=3
 import os
 import sys
 import shutil
@@ -7,39 +6,39 @@ import time
 import threading
 from concurrent.futures import ThreadPoolExecutor
 
-# 想看内存和进度可以加上--show-memory --show-progress,由于我这里都是对单个py文件进行编码,避免太多打印,就没有加
-# windows与linux命令不一样,因此分开构造,线程主要是看自身电脑配置,服务器配置高一些就可以多配置一点
-# 由于linux下可能会有多个python,因此这里要配置绝对路径或者环境变量中的python3
 if sys.platform.startswith("win"):
     command_base = " {}  -m nuitka --mingw64  --module --remove-output --output-dir={}  {}"
-    max_workers = 2
+    max_workers = 8
     python_path = "python"
 else:
     command_base = " {}  -m nuitka  --module --remove-output --output-dir={}  {}"
     max_workers = 8
     python_path = "python3"
 
-# 这里是需要打包的目录
-need_walk = ("app",)
-# 这些文件是根目录下需要直接拷贝的,不打包的
-need_copy_dir = ("checkpoint", ".env", "manage.py", "requirements.txt")
-# 以下文件或者目录是不需要打包的,只要是文件包含以下字段,均不打包
-no_need_file = ("__init__.py", "__pycache__", ".idea")
+# 项目根目录下不用（能）转译的py文件（夹）名，用于启动的入口脚本文件一定要加进来
+ignore_files = [
+    'nuitka_build.py', "nuitka_build", "cython_build", 'setup_main.py', 'setup.py', 'venv', "env", 'manage.py'
+]
+# 不需要原样复制到编译文件夹的文件或者文件夹
+ignore_move = ['venv', 'env', ".git", ".idea", '__pycache__', 'setup.py', 'setup_main.py', "nuitka_build.py", "nuitka_build", "cython_build",
+               "README.md", ".env_example"]
+# # 以下文件或者目录是不需要打包的,只要是文件包含以下字段,均不打包
+no_need_file = ("__init__.py")
+# 需要编译的文件夹绝对路径
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# 将以上不需要转译的文件(夹)加上绝对路径
+# ignore_files = [os.path.join(BASE_DIR, x) for x in ignore_files]
+# 打包文件夹名
+package_name = "nuitka_build"
+# 打包文件夹路径
+package_path = os.path.join(BASE_DIR, package_name)
+# 若没有打包文件夹，则生成一个
+if not os.path.exists(package_path):
+    os.mkdir(package_path)
 # 多并发统计进度需要一个锁,如果这里不统计我们不需要锁
 _lock = threading.Lock()
 num = 0
-
-
-def check(path):
-    """
-    检查路径是否是包含了不打包的字段,如果包含,则返回一个True
-    :param path: 需要被检查的路径
-    :return:
-    """
-    for i in no_need_file:
-        if i in path:
-            return True
-    return False
+all_num = 0
 
 
 def _copy(srt_file, dst_file):
@@ -84,43 +83,53 @@ def handle_package(command):
         return
 
 
-def main(max_workers=1, _current_path=None, end_dir=""):
-    _current_path = _current_path or os.path.abspath(os.path.dirname(__file__))
+def main(max_workers=1):
     t1 = time.time()
     command_list = []
     # 每次打包之前先删除目标目录
-    if os.path.exists(end_dir):
-        shutil.rmtree(end_dir)
+    if os.path.exists(package_path):
+        shutil.rmtree(package_path)
     # 然后递归创建此目录
-    if not os.path.exists(end_dir):
-        os.makedirs(end_dir)
-    logging.warning("当前目录为：{}".format(_current_path))
+    if not os.path.exists(package_path):
+        os.makedirs(package_path)
+    logging.warning("当前目录为：{}".format(BASE_DIR))
 
-    for i in os.listdir(_current_path):
-        srt_file = os.path.join(_current_path, i)
-        if i not in need_walk and i in need_copy_dir:
-            # 不需要打包的直接拷贝即可
-            dst_file = os.path.join(end_dir, i)
-            _copy(srt_file, dst_file)
-
-        elif i in need_walk:
-            if not os.path.isdir(srt_file):
-                continue
-            for root, dirs, files in os.walk(srt_file, topdown=False):
-                for name in files:
-                    new_root = root.replace(_current_path, end_dir)
-                    srt_file = os.path.join(root, name)
-                    if not os.path.exists(new_root):
-                        os.makedirs(new_root)
-                    if not name.endswith(".py") or check(srt_file):
-                        # 不需要打包的直接拷贝即可
-                        dst_file = os.path.join(new_root, name)
-                        _copy(srt_file, dst_file)
-                    else:
-                        command = command_base.format(python_path, new_root, srt_file)
-                        command_list.append(command)
+    for i in os.listdir(BASE_DIR):
+        srt_file = os.path.join(BASE_DIR, i)
+        if i in ignore_files:
+            if i not in ignore_move:
+                dst_file = os.path.join(package_path, i)
+                _copy(srt_file, dst_file)
         else:
-            pass
+            if os.path.isfile(srt_file):
+                if i.endswith(".py") and i not in no_need_file:
+                    command = command_base.format(python_path, package_path, srt_file)
+                    command_list.append(command)
+                elif i not in ignore_move:
+                    dst_file = os.path.join(package_path, i)
+                    _copy(srt_file, dst_file)
+            else:
+                if i in ignore_move:
+                    continue
+                for root, dirs, files in os.walk(srt_file, topdown=False):
+                    if sys.platform.startswith("win"):
+                        if root.split("\\")[-1] in ignore_move:
+                            continue
+                    else:
+                        if root.split("/")[-1] in ignore_move:
+                            continue
+                    for name in files:
+                        new_root = root.replace(BASE_DIR, package_path)
+                        srt_file = os.path.join(root, name)
+                        if not os.path.exists(new_root):
+                            os.makedirs(new_root)
+                        if not name.endswith(".py") or name in no_need_file:
+                            # 不需要打包的直接拷贝即可
+                            dst_file = os.path.join(new_root, name)
+                            _copy(srt_file, dst_file)
+                        else:
+                            command = command_base.format(python_path, new_root, srt_file)
+                            command_list.append(command)
     logging.warning("总共需要打包：{}个".format(len(command_list)))
     global all_num
     all_num = len(command_list)
@@ -132,12 +141,14 @@ def main(max_workers=1, _current_path=None, end_dir=""):
         for p in pool:
             p.result()
     cost = time.time() - t1
-    batch_rename(end_dir)
-    batch_delete(end_dir)
+    batch_rename(package_path)
+    batch_delete(package_path)
     minute, second = divmod(cost, 60)
-    logging.warning("共计打包：{}个文件，此次导出共花费了:{}分{}秒,平均每秒{}个导出".format(len(command_list), minute, second,
-                                                        round((len(command_list) / cost), 2)))
+    logging.warning(
+        "共计打包：{}个文件，此次导出共花费了:{}分{}秒,平均每秒{}个导出".format(len(command_list), minute, second,
+                                                                              round((len(command_list) / cost), 2)))
     return
+
 
 def batch_rename(src_path):
     filenames = os.listdir(src_path)
@@ -160,6 +171,7 @@ def batch_rename(src_path):
             continue
         os.rename(old_name, new_name)
 
+
 def batch_delete(src_path):
     filenames = os.listdir(src_path)
     for filename in filenames:
@@ -173,6 +185,4 @@ def batch_delete(src_path):
 
 
 if __name__ == '__main__':
-    current_path = os.path.dirname(os.path.abspath(__file__))
-    end_dir = os.path.join(current_path, "nuitka_build")
-    main(_current_path=current_path, end_dir=end_dir, max_workers=max_workers)
+    main(max_workers=max_workers)

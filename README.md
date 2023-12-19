@@ -1,22 +1,23 @@
 # 测试私有化部署
 
 ## 模型文件加解密
-- 事先 设置一个固定字符串通过 md5 加密成 AES key 通过AES 对称加密算法 加密模型文件
-- 运行时 通过固定字符串 md5 加密成 AES key 通过AES 对称加密算法 解密模型文件 为 bytes
-- torch.load bytes
+- 事先 设置一个固定字符串通过 md5 加密生成 AES key, 使用 AES key 通过 AES 对称加密算法 加密模型文件
+- 运行时 通过同样的算法 解密模型文件 为 bytes
+- pytorch 加载 bytes
+- 这个固定字符串可以使用目标机器的 mac地址(全球唯一) 实现设备绑定
 ## Cython 编译
 - 通过 Cython 编译项目所有 py 文件为 共享链接库 (windows pyd, linux so), 保持项目结构 
 - 入口 manage.py 文件 不编译 
 - 依赖现有 python 环境运行 manage.py 文件
 - `python setup_main.py` 
 - `python manage.py`
-## Nuitka 编译
-- 通过 Cython 编译项目所有 py 文件为 共享链接库 (windows pyd, linux so), 保持项目结构 
+## [Nuitka 编译](https://nuitka.net/doc/user-manual.html)
+- 通过 Nuitka 编译项目所有 py 文件为 共享链接库 (windows pyd, linux so), 保持项目结构 
 - 入口 manage.py 文件 不编译 
 - 依赖现有 python 环境运行 manage.py 文件
 - `python nuitka_build.py` 
 - `python manage.py`
-## pyarmor 加密
+## [pyarmor 加密(不支持python3.11)](https://pyarmor.readthedocs.io/)
 - `pyarmor-7 init --entry=manage.py`
 - `pyarmor-7 config --manifest "global-include *.py, prune venv, prune dist, exclude nuitka_build.py, exclude setup.py, exclude setup_main.py"`
 - `pyarmor-7 build `

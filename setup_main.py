@@ -1,41 +1,39 @@
+import logging
 import os
+import threading
+from concurrent.futures import ThreadPoolExecutor
 
 # 项目根目录下不用（能）转译的py文件（夹）名，用于启动的入口脚本文件一定要加进来
 ignore_files = [
-    'nuitka_build', 'venv', 'checkpoint', '__pycache__', '.git', 'setup.py', 'setup_main.py',
-    'manage.py'
+    'nuitka_build.py', "nuitka_build", "cython_build", 'setup_main.py', 'setup.py', 'venv', "env", 'manage.py'
 ]
-# 需要移动的以点开头的文件
-need_move_dot_file = [".env", ".env_example"]
-# 项目子目录下不用（能）转译的'py文件（夹）名
-ignore_names = ["venv"]
 # 不需要原样复制到编译文件夹的文件或者文件夹
-ignore_move = ['venv', '__pycache__', 'setup.py', 'setup_main.py', "README.md", ".env_example"]
+ignore_move = ['venv', 'env', ".git", ".idea", '__pycache__', 'setup.py', 'setup_main.py', "nuitka_build.py", "nuitka_build", "cython_build"
+               "README.md", ".env_example"]
 # 需要编译的文件夹绝对路径
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # 将以上不需要转译的文件(夹)加上绝对路径
 ignore_files = [os.path.join(BASE_DIR, x) for x in ignore_files]
-# 是否将编译打包到指定文件夹内 (True)，还是和源文件在同一目录下(False)，默认True
-package = True
-# 打包文件夹名 (package = True 时有效)
+# 打包文件夹名
 package_name = "cython_build"
-# 打包文件夹路径 (package = True 时有效)
+# 打包文件夹路径
 package_path = os.path.join(BASE_DIR, package_name)
 # 若没有打包文件夹，则生成一个
 if not os.path.exists(package_path):
     os.mkdir(package_path)
 translate_pys = []
+# 多并发统计进度需要一个锁,如果这里不统计我们不需要锁
+_lock = threading.Lock()
+num = 0
+all_num = 0
+command_list = []
 
 
 # 编译需要的py文件
 def translate_dir(path):
+    global command_list
     pathes = os.listdir(path)
-    # if path != BASE_DIR and path != '__init__.py' in pathes:
-    #     with open(os.path.join(path, '__init__.py'), 'w', encoding='utf8') as f:
-    #         pass
     for p in pathes:
-        if p in ignore_names:
-            continue
         # if p.startswith('__') or p.startswith('.') or p.startswith('build'):
         #     continue
         if p.startswith('__') or p.startswith('build'):
@@ -57,14 +55,42 @@ def translate_dir(path):
                     content = '# cython: language_level=3\n' + content
                     with open(f_path, 'w', encoding='utf8') as f1:
                         f1.write(content)
-            os.system('python setup.py ' + f_path + ' build_ext --inplace')
+            command_list.append('python setup.py ' + f_path + ' build_ext --inplace')
             translate_pys.append(f_path)
-            f_name = '.'.join(f_path.split('.')[:-1])
-            py_file = '.'.join([f_name, 'py'])
-            c_file = '.'.join([f_name, 'c'])
-            print(f"f_path: {f_path}, c_file: {c_file}, py_file: {py_file}")
-            if os.path.exists(c_file):
-                os.remove(c_file)
+
+
+def handle_package(command):
+    """
+    执行单条命令
+    :param command: 需要被执行的命令
+    :return: 无
+    """
+
+    try:
+        val = os.system(command)
+        if val == 0:
+            logging.warning("执行:{}成功".format(command))
+        with _lock:
+            global num
+            num += 1
+            logging.warning("完成了{}/{}".format(num, all_num))
+    except Exception as e:
+        logging.error("执行:{},失败:{}".format(command, e), exc_info=True)
+    finally:
+        return
+
+
+def execute(max_workers=2):
+    global all_num
+    all_num = len(command_list)
+    pool = []
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        for command in command_list:
+            print(command)
+            t = executor.submit(handle_package, command=command)
+            pool.append(t)
+        for p in pool:
+            p.result()
 
 
 # 移除编译临时文件
@@ -87,9 +113,6 @@ def remove_dir(path, rm_path=True):
 def mv_to_packages(path=BASE_DIR):
     pathes = os.listdir(path)
     for p in pathes:
-        if p.startswith('.'):
-            if p not in need_move_dot_file:
-                continue
         if p in ignore_move:
             continue
         f_path = os.path.join(path, p)
@@ -136,11 +159,22 @@ def batch_rename(src_path):
         os.rename(old_name, new_name)
 
 
+def batch_remove():
+    for f_path in translate_pys:
+        f_name = '.'.join(f_path.split('.')[:-1])
+        py_file = '.'.join([f_name, 'py'])
+        c_file = '.'.join([f_name, 'c'])
+        print(f"f_path: {f_path}, c_file: {c_file}, py_file: {py_file}")
+        if os.path.exists(c_file):
+            os.remove(c_file)
+
+
 def run():
     translate_dir(BASE_DIR)
+    execute(max_workers=4)
     remove_dir(os.path.join(BASE_DIR, 'build'))
-    if package:
-        mv_to_packages()
+    mv_to_packages()
+    batch_remove()
     batch_rename(os.path.join(BASE_DIR, package_name))
 
 
