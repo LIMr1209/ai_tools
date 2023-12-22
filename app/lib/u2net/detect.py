@@ -3,6 +3,8 @@ import errno
 import io
 import os
 import sys
+import tempfile
+
 import numpy as np
 import torch
 from PIL import Image
@@ -59,10 +61,9 @@ def encrypt_file(key, in_filename, out_filename=None, chunksize=64 * 1024):
 #                     chunk = unpad(chunk, AES.block_size, style='pkcs7')
 #                 outfile.write(chunk)
 
-def decrypt_file(key, in_filename, out_filename=None, chunksize=64 * 1024):
+def decrypt_file(key, in_filename, chunksize=64 * 1024):
     # if not out_filename:
     #     out_filename = in_filename + '.dec'
-    chunks = b""
     with open(in_filename, 'rb') as infile:
         # prefix = struct.unpack('<Q', infile.read(8))[0]
         iv = infile.read(16)
@@ -75,8 +76,7 @@ def decrypt_file(key, in_filename, out_filename=None, chunksize=64 * 1024):
             chunk = encryptor.decrypt(chunk)
             if pos == encrypted_filesize:
                 chunk = unpad(chunk, AES.block_size, style='pkcs7')
-            chunks += chunk
-    return chunks
+            yield chunk
 
 
 def load_model(model_name: str = "u2net"):
@@ -90,8 +90,12 @@ def load_model(model_name: str = "u2net"):
     else:
         print("Choose between u2net or u2netp", file=sys.stderr)
         return None
-    chunks = decrypt_file(b, model_path)
-    net.load_state_dict(torch.load(io.BytesIO(chunks), map_location='cpu'))
+    fp = tempfile.TemporaryFile()
+    for i in decrypt_file(b, model_path):
+        fp.write(i)
+    fp.seek(0)
+    net.load_state_dict(torch.load(fp, map_location='cpu'))
+    fp.close()
     # if current_app.config['TORCH_GPU']:
     #     net.load_state_dict(torch.load(current_app.config['U2NETP_PATH'],map_location='cuda:1'))
     # else:
