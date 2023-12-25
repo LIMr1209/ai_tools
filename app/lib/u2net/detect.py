@@ -90,6 +90,7 @@ def load_model(model_name: str = "u2net"):
     else:
         print("Choose between u2net or u2netp", file=sys.stderr)
         return None
+    # net.load_state_dict(torch.load(model_path, map_location='cpu'))
     chunks = decrypt_file(b, model_path)
     net.load_state_dict(torch.load(io.BytesIO(chunks), map_location='cpu'))
     # if current_app.config['TORCH_GPU']:

@@ -1,0 +1,14 @@
+ProtectionMode: Data
+Licenses:
+  - Name: cm
+    Type: CodeMeter
+    FirmCode: 6001371
+    ProductCode: 15
+FilesToEncrypt:
+  Input: checkpoint/u2net
+  OutputFolder: codemeter/checkpoint/u2net
+LicenseLists:
+  - Id: 0
+    Licenses:
+      - cm
+

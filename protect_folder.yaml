@@ -1,0 +1,27 @@
+Options: {}
+
+Licenses:
+
+  - Name: Default
+
+    Type: CodeMeter
+
+    FirmCode: 6001371
+
+    ProductCode: 15
+    
+    AccessMode: StationShare
+
+FilesToEncrypt:
+
+  Input: ./
+
+  OutputFolder: codemeter
+
+LicenseLists:
+
+  - Id: 0
+
+    Licenses:
+
+      - Default
