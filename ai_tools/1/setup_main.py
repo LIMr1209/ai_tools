@@ -5,13 +5,13 @@ from concurrent.futures import ThreadPoolExecutor
 
 # 项目根目录下不用（能）转译的py文件（夹）名，用于启动的入口脚本文件一定要加进来
 ignore_files = [
-    'nuitka_build.py', "nuitka_build", "cython_build", 'setup_main.py', 'setup.py', 'venv', "env", 'manage.py'
+    "cython_build", 'setup_main.py', 'setup.py', 'venv', "env"
 ]
 
-other_ignore_files = ["manage.py", "app\\config\\app.py"]
+other_ignore_files = ["model.py", "client.py"]
+ignore_files = ignore_files + other_ignore_files
 # 不需要原样复制到编译文件夹的文件或者文件夹
-ignore_move = ['venv', 'env', ".git", ".idea", '__pycache__', 'setup.py', 'setup_main.py', "nuitka_build.py", "nuitka_build", "cython_build"
-               "README.md", ".env_example"]
+ignore_move = ['__pycache__', 'setup.py', 'setup_main.py', "cython_build"]
 # 需要编译的文件夹绝对路径
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # 将以上不需要转译的文件(夹)加上绝对路径
@@ -185,4 +185,3 @@ def run():
 
 if __name__ == '__main__':
     run()
-

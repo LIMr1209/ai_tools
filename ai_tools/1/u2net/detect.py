@@ -1,6 +1,4 @@
 # cython: language_level=3
-import errno
-import io
 import os
 import sys
 import tempfile
@@ -10,7 +8,6 @@ import torch
 from PIL import Image
 from torchvision import transforms
 from . import data_loader, u2net
-from flask import current_app
 
 # pip install pycryptodome
 from Crypto.Cipher import AES
@@ -43,24 +40,6 @@ def encrypt_file(key, in_filename, out_filename=None, chunksize=64 * 1024):
                 outfile.write(encryptor.encrypt(chunk))
 
 
-# def decrypt_file(key, in_filename, out_filename=None, chunksize=64 * 1024):
-#     # if not out_filename:
-#     #     out_filename = in_filename + '.dec'
-#     with open(in_filename, 'rb') as infile:
-#         # prefix = struct.unpack('<Q', infile.read(8))[0]
-#         iv = infile.read(16)
-#         encryptor = AES.new(key, AES.MODE_CBC, iv)
-#         with open(out_filename, 'wb') as outfile:
-#             encrypted_filesize = os.path.getsize(in_filename)
-#             pos = 16  # the filesize and IV.
-#             while pos < encrypted_filesize:
-#                 chunk = infile.read(chunksize)
-#                 pos += len(chunk)
-#                 chunk = encryptor.decrypt(chunk)
-#                 if pos == encrypted_filesize:
-#                     chunk = unpad(chunk, AES.block_size, style='pkcs7')
-#                 outfile.write(chunk)
-
 def decrypt_file(key, in_filename, chunksize=64 * 1024):
     # if not out_filename:
     #     out_filename = in_filename + '.dec'
@@ -79,14 +58,14 @@ def decrypt_file(key, in_filename, chunksize=64 * 1024):
             yield chunk
 
 
-def load_model(model_name: str = "u2net"):
+def load_model(model_name: str = "u2netp"):
     if model_name == "u2netp":
         net = u2net.U2NETP(3, 1)
-        model_path = current_app.config['U2NETP_PATH']
+        model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "checkpoint", "u2net", "u2netp.pth")
 
     elif model_name == "u2net":
         net = u2net.U2NET(3, 1)
-        model_path = current_app.config['U2NET_PATH']
+        model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "checkpoint", "u2net", "u2net.pth")
     else:
         print("Choose between u2net or u2netp", file=sys.stderr)
         return None
@@ -94,12 +73,9 @@ def load_model(model_name: str = "u2net"):
     for i in decrypt_file(b, model_path):
         fp.write(i)
     fp.seek(0)
+    # net.load_state_dict(torch.load(fp, map_location='cuda'))
     net.load_state_dict(torch.load(fp, map_location='cpu'))
     fp.close()
-    # if current_app.config['TORCH_GPU']:
-    #     net.load_state_dict(torch.load(current_app.config['U2NETP_PATH'],map_location='cuda:1'))
-    # else:
-    #     net.load_state_dict(torch.load(current_app.config['U2NETP_PATH'],map_location='cpu'))
     net.eval()
 
     return net

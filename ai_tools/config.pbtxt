@@ -1,0 +1,29 @@
+name: "ai_tools"
+backend: "python"
+
+input [
+  {
+    name: "INPUT0"
+    data_type: TYPE_STRING
+    format: FORMAT_NONE
+    dims: [ -1 ]
+    is_shape_tensor: false
+    allow_ragged_batch: false
+    optional: false
+  }
+]
+output [
+  {
+    name: "OUTPUT0"
+    data_type: TYPE_STRING
+    dims: [ -1 ]
+    is_shape_tensor: false
+  }
+]
+
+instance_group [
+  {
+    count: 1
+    kind: KIND_GPU
+  }
+]
