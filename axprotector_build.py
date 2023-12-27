@@ -1,14 +1,12 @@
-# cython: language_level=3
 import logging
 import os
-import subprocess
 import threading
 from concurrent.futures.thread import ThreadPoolExecutor
 
-import yaml
 
 os.environ[
-    "AXPROTECTOR_PYTHON_SDK"] = '"C:\\Program Files (x86)\\WIBU-SYSTEMS\\AxProtector\\Devkit\\bin\\python_nc\\AxProtector.py"'
+    "AXPROTECTOR_PYTHON_SDK"] = '"C:\\Program Files (x86)\\WIBU-SYSTEMS\\AxProtector\\Devkit\\bin\\AxProtector.exe"'
+
 
 # 项目根目录下不用（能）转译的py文件（夹）名，用于启动的入口脚本文件一定要加进来
 ignore_files = [
@@ -46,22 +44,11 @@ def translate_dir(path):
         if os.path.isdir(f_path):
             translate_dir(f_path)
         else:
-            if not f_path.endswith('.py'):
+            if not f_path.endswith('.so'):
                 continue
-            with open('./protect_folder.yaml', 'r', encoding='utf-8') as f:
-                result = yaml.load(f.read(), Loader=yaml.FullLoader)
-            result["FilesToEncrypt"]["Input"] = f_path
-            out_dir = path.replace(BASE_DIR, package_path)
-            if not os.path.exists(out_dir):
-                os.makedirs(out_dir)
-            result["FilesToEncrypt"]["OutputFolder"] = out_dir
-            yaml_dir = os.path.join(package_path, "axprotector_yaml")
-            if not os.path.exists(yaml_dir):
-                os.makedirs(yaml_dir)
-            with open(f'codemeter/axprotector_yaml/protect_folder_{t}.yaml', 'w+', encoding='utf-8') as f:
-                yaml.dump(data=result, stream=f, allow_unicode=True)
+            out = f_path.replace(BASE_DIR, package_path)
             a = os.getenv("AXPROTECTOR_PYTHON_SDK")
-            command = f"python {a}  codemeter/axprotector_yaml/protect_folder_{t}.yaml"
+            command = f"{a} -x -kcm -f6001371 -p15 -cf0 -d:6.20 -fw:3.00 -sl -ns -cav -cas100 -wu0 -we0 -eac -eec -eusc1 -emc -car30,3 -v -cag17 -# -o:{out} {f_path}"
             command_list.append(command)
             t += 1
 
@@ -115,7 +102,7 @@ def mv_to_packages(path):
                 os.mkdir(p_f_path)
             mv_to_packages(f_path)
         else:
-            if not f_path.endswith('.py'):
+            if not f_path.endswith('.so'):
                 with open(f_path, 'rb') as f:
                     content = f.read()
                     with open(p_f_path, 'wb') as f:

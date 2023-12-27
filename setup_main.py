@@ -14,7 +14,7 @@ ignore_files = ignore_files + other_ignore_files
 ignore_move = ['venv', 'env', ".git", ".idea", '__pycache__', 'setup.py', 'setup_main.py', "nuitka_build.py", "nuitka_build", "cython_build"
                "README.md", ".env_example"]
 
-other_ignore_move = ["ai_tools", "axprotector_build.py"]
+other_ignore_move = ["ai_tools"]
 ignore_move = other_ignore_move + ignore_move
 # 需要编译的文件夹绝对路径
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -178,13 +178,28 @@ def batch_remove():
             os.remove(c_file)
 
 
+def gcc_build():
+    global command_list
+    command_list = []
+    for f_path in translate_pys:
+        f_name = '.'.join(f_path.split('.')[:-1])
+        c_file = '.'.join([f_name, 'c'])
+        c_file = c_file.replace(BASE_DIR, package_path)
+        c_so = c_file.replace(".c", ".so")
+        command = f"gcc -shared -o {c_so} -fPIC -I/usr/include/python3.10 -lpython3.10  {c_file}"
+        command_list.append(command)
+
+
+
 def run():
     translate_dir(BASE_DIR)
     execute(max_workers=8)
     remove_dir(os.path.join(BASE_DIR, 'build'))
     mv_to_packages()
-    batch_remove()
     batch_rename(os.path.join(BASE_DIR, package_name))
+    gcc_build()
+    execute(max_workers=8)
+    batch_remove()
 
 
 if __name__ == '__main__':
