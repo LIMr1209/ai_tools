@@ -5,13 +5,17 @@ from concurrent.futures import ThreadPoolExecutor
 
 # 项目根目录下不用（能）转译的py文件（夹）名，用于启动的入口脚本文件一定要加进来
 ignore_files = [
-    'nuitka_build.py', "nuitka_build", "cython_build", 'setup_main.py', 'setup.py', 'venv', "env", 'manage.py'
+    'nuitka_build.py', "nuitka_build", "cython_build", 'setup_main.py', 'setup.py', 'venv', "env"
 ]
 
-other_ignore_files = ["manage.py", "app\\config\\app.py"]
+other_ignore_files = ["ai_tools", "manage.py", "app/config/app.py", "axprotector_build.py"]
+ignore_files = ignore_files + other_ignore_files
 # 不需要原样复制到编译文件夹的文件或者文件夹
 ignore_move = ['venv', 'env', ".git", ".idea", '__pycache__', 'setup.py', 'setup_main.py', "nuitka_build.py", "nuitka_build", "cython_build"
                "README.md", ".env_example"]
+
+other_ignore_move = ["ai_tools", "axprotector_build.py"]
+ignore_move = other_ignore_move + ignore_move
 # 需要编译的文件夹绝对路径
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # 将以上不需要转译的文件(夹)加上绝对路径
@@ -176,7 +180,7 @@ def batch_remove():
 
 def run():
     translate_dir(BASE_DIR)
-    execute(max_workers=4)
+    execute(max_workers=8)
     remove_dir(os.path.join(BASE_DIR, 'build'))
     mv_to_packages()
     batch_remove()
