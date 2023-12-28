@@ -186,6 +186,18 @@ def gcc_build():
         c_file = '.'.join([f_name, 'c'])
         c_file = c_file.replace(BASE_DIR, package_path)
         c_so = c_file.replace(".c", ".so")
+
+        with open(c_file, 'r') as file:
+            lines = file.readlines()
+
+        # 在第28行之前插入要添加的代码
+        code_to_insert = '#include "wibuixap.h"\nWIBU_PHDR_GAP\n'  # 替换成你要插入的代码
+        lines.insert(27, code_to_insert)
+
+        # 打开文件以写入修改后的内容
+        with open(c_file, 'w') as file:
+            file.writelines(lines)
+
         command = f"gcc -shared -o {c_so} -fPIC -I/usr/include/python3.10 -lpython3.10  {c_file}"
         command_list.append(command)
 
